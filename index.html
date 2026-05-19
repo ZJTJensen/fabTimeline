@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>World of Rathe — Timeline</title>
+  <link rel="stylesheet" href="timeline.css">
+</head>
+<body>
+
+  <!-- ── Hamburger / hero filter menu ──────────────────────────────────────── -->
+  <div id="menu-overlay">
+    <div id="menu-panel">
+      <h2>Heroes of Rathe</h2>
+      <p>Toggle heroes on the timeline. Each hero is a curved line that fans out to its own lane between events, then converges with other heroes at shared moments. Heroes appear when zoomed in past the hero threshold.</p>
+      <div class="menu-actions">
+        <button id="select-all">All</button>
+        <button id="select-none">None</button>
+      </div>
+      <div id="hero-list"></div>
+    </div>
+  </div>
+
+  <!-- ── Controls ───────────────────────────────────────────────────────────── -->
+  <div id="ui">
+    <div class="ui-row">
+      <button class="icon-btn" id="hamburger-btn" title="Filter Heroes">☰</button>
+      <button class="icon-btn" id="btn-zoom-in"  title="Zoom In (+)">＋</button>
+      <button class="icon-btn" id="btn-zoom-out" title="Zoom Out (-)">－</button>
+      <button id="btn-reset"       title="Fit whole timeline (0)">Fit All</button>
+      <button id="btn-jump-modern" title="Jump to 4th Age">4th Age</button>
+    </div>
+    <div class="ui-row">
+      <span id="zoom-display">1.00×</span>
+    </div>
+  </div>
+
+  <!-- ── Legend (bottom-left) ───────────────────────────────────────────────── -->
+  <div id="legend">
+    <div class="legend-header">
+      <h3>Legend</h3>
+      <button id="legend-toggle" title="Minimize legend">−</button>
+    </div>
+    <div class="legend-body">
+      <div class="legend-row"><div class="legend-dot" style="background:#f6e05e;border-radius:2px;transform:rotate(45deg);box-shadow:0 0 8px rgba(246,224,94,0.7)"></div>Age boundary</div>
+      <div class="legend-row"><div class="legend-dot" style="background:rgba(215,215,240,0.95);border-radius:2px;transform:rotate(45deg);box-shadow:0 0 6px rgba(215,215,240,0.5)"></div>World event</div>
+      <div class="legend-row" style="margin-top:6px; border-top:1px solid #2a2a44; padding-top:6px; color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Hero events</div>
+      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">+</span>First event</div>
+      <div class="legend-row"><div class="legend-dot" style="background:#a0a0c0;border:2px solid rgba(9,9,15,0.9)"></div>Story event</div>
+      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">−</span>Last event</div>
+      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">✕</span>Death</div>
+      <div class="legend-row" style="margin-top:6px; border-top:1px solid #2a2a44; padding-top:6px; color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Year notation</div>
+      <div class="legend-row" style="color:#9090b0; font-size:11px"><b style="color:#e8e8f0">BWA</b> — Before War of the Ancients</div>
+      <div class="legend-row" style="color:#9090b0; font-size:11px"><b style="color:#e8e8f0">AWA</b> — After War of the Ancients</div>
+      <div class="legend-row" style="margin-top:6px; color:#6b6b8a; font-size:11px">
+        Scroll or pinch to zoom.<br>
+        Drag to pan.<br>
+        Heroes appear at high zoom.
+      </div>
+      <div class="legend-row" style="margin-top:8px; flex-direction:column; gap:5px; align-items:stretch">
+        <button id="btn-show-world-events" class="legend-btn">Show World Events</button>
+        <button id="btn-show-age-bounds"   class="legend-btn">Show Age Boundaries</button>
+        <button id="btn-show-set-icons"    class="legend-btn">Show Set Icons</button>
+        <button id="btn-show-heroes"       class="legend-btn" title="Force all hero timelines visible at any zoom level">Show Heroes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tooltip ────────────────────────────────────────────────────────────── -->
+  <div id="tooltip">
+    <div class="tt-title"></div>
+    <div class="tt-sub"></div>
+    <div class="tt-extra"></div>
+  </div>
+
+  <!-- ── Main timeline viewport ─────────────────────────────────────────────── -->
+  <div id="viewport">
+    <!--
+      #track is 25 000 px wide and is transformed (scaleX + translateX).
+      Three child layers sit inside it; their z-indices and opacities are
+      toggled by JS based on the effective zoom level.
+    -->
+    <div id="track">
+
+      <!-- Layer 1: always visible — era bands, axis line, tick marks, world events -->
+      <div id="world-layer"></div>
+
+      <!-- Layer 2: set markers — fades in when zoomed past SET_THRESHOLD -->
+      <div id="set-layer"></div>
+
+      <!-- Layer 3: hero lanes — fades in when zoomed past HERO_THRESHOLD -->
+      <div id="hero-layer"></div>
+
+    </div>
+  </div>
+
+  <script src="timeline.js"></script>
+</body>
+</html>
