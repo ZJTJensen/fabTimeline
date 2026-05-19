@@ -80,6 +80,10 @@
       Three child layers sit inside it; their z-indices and opacities are
       toggled by JS based on the effective zoom level.
     -->
+    <!-- Hero overlay elements live OUTSIDE #track — no scaleX inheritance, no rasterisation blur -->
+    <div id="hero-names-layer"></div>
+    <div id="hero-dots-screen"></div>
+
     <div id="track">
 
       <!-- Layer 1: always visible — era bands, axis line, tick marks, world events -->

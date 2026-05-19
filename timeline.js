@@ -466,7 +466,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'maxx', name: 'Maxx, the Unstoppable', class: ['Mechanologist'], talent:['None'], region: 'Metrix',
+    id: 'maxx', name: 'Maxx, the Hype Nitro', class: ['Mechanologist'], talent:['None'], region: 'Metrix',
     color: '#00b4d8',
     description: '',
     events: [
@@ -676,6 +676,15 @@ const HEROES = [
       { year: 253, label: 'Zen walks every inch of Misteria\'s lands', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-1-the-tiger-in-the-mist.html'},
     ],
   },
+    {
+    id: 'zyggy', name: 'Zyggy, Starlight', class: ['Illusionist'], talent:['Lightning'], region: 'Aria',
+    color: '#635fb8',
+    description: '',
+    events: [
+      { year: 254.6, label: 'Aurora and Oscilio find Zyggy in the Auric keep', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/omens-in-the-sky.html' },
+    
+    ],
+  },
 ];
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -694,15 +703,25 @@ let setIconsOverride    = null;
 
 // Hero fan layer handles (set by buildHeroFanLayer)
 let heroSVG       = null;
-let heroDotsLayer = null;
 
 // Sticky label data: populated by buildHeroFanLayer, read by updateStickyLabels
 const heroLabelData = [];
+
+// Elements that need a scaleX counter-transform — updated directly in applyTransform()
+// to avoid CSS-variable lag when the compositor applies the track transform early.
+let eraLabelEls      = [];
+let tickLabelEls     = [];
+let eventDotEls      = [];
+let eventLabelEls    = [];
+let convergencePinEls = [];
+let setImgEls        = [];
+let heroDotData      = [];  // { el, heroId, trackX, dotY }
 
 // Threshold (effective px per year in modern era) at which layers appear
 const SET_THRESHOLD          = 0.15;
 const HERO_THRESHOLD         = 0.5;
 const WORLD_EVENT_THRESHOLD  = 0.04; // appear before sets/heroes, after zooming in a bit
+const MAX_ZOOM               = 2.9;
 
 // Hero fan layout constants
 const LANE_SPACING  = 18; // px between adjacent hero lanes
@@ -735,6 +754,8 @@ const track         = document.getElementById('track');
 const worldLayer    = document.getElementById('world-layer');
 const setLayer      = document.getElementById('set-layer');
 const heroLayer     = document.getElementById('hero-layer');
+const heroNamesLayer    = document.getElementById('hero-names-layer');
+const heroDotsScreen    = document.getElementById('hero-dots-screen');
 const menuOverlay   = document.getElementById('menu-overlay');
 const menuPanel     = document.getElementById('menu-panel');
 const hamburgerBtn  = document.getElementById('hamburger-btn');
@@ -771,6 +792,7 @@ function buildWorldLayer() {
       rebuildAll();
     });
     band.appendChild(lbl);
+    eraLabelEls.push(lbl);
     worldLayer.appendChild(band);
   });
 
@@ -783,6 +805,7 @@ function buildWorldLayer() {
     const lbl = document.createElement('span');
     lbl.textContent = yr < 0 ? Math.abs(yr) + ' BWA' : (yr === 0 ? '0 WA' : yr + ' AWA');
     tick.appendChild(lbl);
+    tickLabelEls.push(lbl);
     worldLayer.appendChild(tick);
   });
 
@@ -811,11 +834,13 @@ function buildWorldLayer() {
     const dot = document.createElement('div');
     dot.className = 'event-dot';
     marker.appendChild(dot);
+    eventDotEls.push(dot);
 
     const lbl = document.createElement('div');
     lbl.className = 'event-label';
     lbl.innerHTML = ev.label.replace(/\n/g, '<br>');
     marker.appendChild(lbl);
+    eventLabelEls.push(lbl);
 
     marker.addEventListener('click', e => {
       if (ev.convergence) showConvergenceTooltip(e, ev);
@@ -833,6 +858,7 @@ function buildWorldLayer() {
     pin.title = ev.label;
     pin.addEventListener('click', e => showConvergenceTooltip(e, ev));
     worldLayer.appendChild(pin);
+    convergencePinEls.push(pin);
   });
 }
 
@@ -862,6 +888,7 @@ function buildSetLayer() {
       img.addEventListener('error', () => { img.style.display = 'none'; });
       img.addEventListener('click', ev => showTooltip(ev, s.label, 'Year ' + s.year));
       col.appendChild(img);
+      setImgEls.push(img);
 
     });
 
@@ -906,9 +933,7 @@ function buildHeroFanLayer() {
   heroLayer.appendChild(heroSVG);
 
   // ── HTML layer for interactive dots + name labels ─────────────────────────
-  heroDotsLayer = document.createElement('div');
-  heroDotsLayer.id = 'hero-dots-layer';
-  heroLayer.appendChild(heroDotsLayer);
+
 
   // Years where a world event is marked as a convergence hub
   const convergenceYears = new Set(
@@ -966,8 +991,6 @@ function buildHeroFanLayer() {
     nameLbl.dataset.hero = hero.id;
     nameLbl.textContent = hero.name;
     nameLbl.style.color = hero.color;
-    nameLbl.style.left = (pts[0].x + 8) + 'px';
-    nameLbl.style.top  = (pts[0].dotY - 8) + 'px';
     nameLbl.style.cursor = 'pointer';
     nameLbl.title = 'Jump to origin';
     nameLbl.addEventListener('click', e => {
@@ -975,15 +998,15 @@ function buildHeroFanLayer() {
       const vw = viewport.clientWidth;
       const minHeroZoom = (HERO_THRESHOLD + 0.2) * TRACK_WIDTH / 3000;
       if (zoom < minHeroZoom) {
-        zoom = minHeroZoom;
+        zoom = Math.min(MAX_ZOOM, minHeroZoom);
         panX = clampPan(vw / 2 - pts[0].x * zoom, zoom);
         applyTransform();
       } else {
         animatePanTo(clampPan(vw / 2 - pts[0].x * zoom, zoom));
       }
     });
-    heroDotsLayer.appendChild(nameLbl);
-    heroLabelData.push({ el: nameLbl, heroId: hero.id, firstX: pts[0].x, lastX: pts[pts.length - 1].x, baseX: pts[0].x + 8 });
+    heroNamesLayer.appendChild(nameLbl);
+    heroLabelData.push({ el: nameLbl, heroId: hero.id, firstX: pts[0].x, lastX: pts[pts.length - 1].x, baseX: pts[0].x + 8, dotY: pts[0].dotY });
 
     // ── Event dots ───────────────────────────────────────────────────────────
     // Exclude convergence-year events — the path dip to the hub is the visual;
@@ -1004,7 +1027,7 @@ function buildHeroFanLayer() {
       dot.dataset.hero = hero.id;
       dot.style.left = pt.x + 'px';
       dot.style.top  = pt.dotY + 'px';
-      const sharesEndPos = !isLast && !actualLastIsConvergence && pt.x === visiblePts[visiblePts.length - 1].x;
+      const sharesEndPos = uniquePositions > 1 && !isLast && !actualLastIsConvergence && pt.x === visiblePts[visiblePts.length - 1].x;
       if (isDeath || isFirst || isLast) {
         dot.style.color = hero.color;
       } else if (!sharesEndPos) {
@@ -1024,7 +1047,8 @@ function buildHeroFanLayer() {
         if (pt.ev.url) window.open(pt.ev.url, '_blank', 'noopener');
       });
 
-      heroDotsLayer.appendChild(dot);
+      heroDotsScreen.appendChild(dot);
+      heroDotData.push({ el: dot, heroId: hero.id, trackX: pt.x, dotY: pt.dotY });
     });
   });
 }
@@ -1064,7 +1088,7 @@ function buildMenu() {
       menuOverlay.classList.remove('open');
       const vw = viewport.clientWidth;
       const minHeroZoom = (HERO_THRESHOLD + 0.2) * TRACK_WIDTH / 3000;
-      if (zoom < minHeroZoom) zoom = minHeroZoom;
+      if (zoom < minHeroZoom) zoom = Math.min(MAX_ZOOM, minHeroZoom);
       panX = clampPan(vw / 2 - yearToX(firstEvt.year) * zoom, zoom);
       applyTransform();
     });
@@ -1094,13 +1118,11 @@ function buildMenu() {
 }
 
 function applyHeroVisibility() {
-  if (!heroSVG || !heroDotsLayer) return;
+  if (!heroSVG) return;
   heroSVG.querySelectorAll('[data-hero]').forEach(el => {
     el.style.display = visibleHeroes.has(el.dataset.hero) ? '' : 'none';
   });
-  heroDotsLayer.querySelectorAll('[data-hero]').forEach(el => {
-    el.style.display = visibleHeroes.has(el.dataset.hero) ? '' : 'none';
-  });
+  // Dot visibility is handled per-element in updateStickyLabels()
   updateStickyLabels();
 }
 
@@ -1108,15 +1130,13 @@ function applyHeroVisibility() {
 // Keeps each hero's name pinned to the left edge of the viewport while any
 // part of that hero's timeline is visible on screen.
 function updateStickyLabels() {
-  if (!heroLabelData.length) return;
   const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
   const visibleLeftTrack  = -panX / zoom;
   const visibleRightTrack = (vw - panX) / zoom;
 
-  const stickyTrackX = (10 - panX) / zoom;
-  const invZ = 1 / zoom;
-
-  heroLabelData.forEach(({ el, heroId, firstX, lastX, baseX }) => {
+  // Hero name labels — sticky to left edge
+  heroLabelData.forEach(({ el, heroId, firstX, lastX, baseX, dotY }) => {
     if (!visibleHeroes.has(heroId)) return;
     const inView = firstX <= visibleRightTrack && lastX >= visibleLeftTrack;
     if (!inView) {
@@ -1124,9 +1144,21 @@ function updateStickyLabels() {
       return;
     }
     if (el.style.display === 'none') el.style.display = '';
-    // Use transform (GPU-composited) instead of left (layout-triggering)
-    const offsetX = Math.max(0, stickyTrackX - baseX);
-    el.style.transform = `translateX(${offsetX}px) scaleX(${invZ})`;
+    el.style.left = Math.max(10, panX + baseX * zoom) + 'px';
+    el.style.top  = (vh / 2 + dotY - 8) + 'px';
+  });
+
+  // Hero dots — screen-coordinate positioning, no scaleX needed
+  heroDotData.forEach(({ el, heroId, trackX, dotY }) => {
+    if (!visibleHeroes.has(heroId)) { el.style.display = 'none'; return; }
+    const screenX = panX + trackX * zoom;
+    if (screenX < -20 || screenX > vw + 20) {
+      if (el.style.display !== 'none') el.style.display = 'none';
+      return;
+    }
+    if (el.style.display === 'none') el.style.display = '';
+    el.style.left = screenX + 'px';
+    el.style.top  = (vh / 2 + dotY) + 'px';
   });
 }
 
@@ -1279,6 +1311,10 @@ function applyTransform() {
     heroLayer.style.opacity = newHeroOpacity;
     heroLayer.style.pointerEvents = showHeroes ? '' : 'none';
     heroLayer.classList.toggle('heroes-hidden', !showHeroes);
+    heroNamesLayer.style.opacity = newHeroOpacity;
+    heroNamesLayer.style.pointerEvents = showHeroes ? '' : 'none';
+    heroDotsScreen.style.opacity = newHeroOpacity;
+    heroDotsScreen.style.pointerEvents = showHeroes ? '' : 'none';
   }
   // Show world event labels always when heroes are hidden; hover-only when heroes visible
   worldLayer.classList.toggle('world-labels-always', !showHeroes);
@@ -1299,6 +1335,17 @@ function applyTransform() {
 
   const invZ = 1 / zoom;
   track.style.setProperty('--inv-zoom', invZ);
+
+  // Update all counter-scale transforms directly in JS — same task as the track
+  // transform update, so no compositor-thread lag can cause a stretched frame.
+  const scaleX      = `scaleX(${invZ})`;
+  const centeredPin = `translate(-50%, -50%) scaleX(${invZ})`;
+  eraLabelEls.forEach(el      => { el.style.transform = scaleX; });
+  tickLabelEls.forEach(el     => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
+  eventDotEls.forEach(el      => { el.style.transform = `scaleX(${invZ}) rotate(45deg)`; });
+  eventLabelEls.forEach(el    => { el.style.transform = scaleX; });
+  convergencePinEls.forEach(el => { el.style.transform = centeredPin; });
+  setImgEls.forEach(el        => { el.style.transform = scaleX; });
 
   if (!tickEls) tickEls = Array.from(worldLayer.querySelectorAll('.tick'));
   tickEls.forEach(tick => {
@@ -1359,7 +1406,7 @@ function zoomAt(clientX, factor) {
   const xInTrack = (clientX - vw - panX) / zoom;
 
   const minZoom = (viewport.clientWidth - 80) / TRACK_WIDTH;
-  const newZoom = Math.min(200, Math.max(minZoom, zoom * factor));
+  const newZoom = Math.min(MAX_ZOOM, Math.max(minZoom, zoom * factor));
   panX = clientX - vw - xInTrack * newZoom;
   panX = clampPan(panX, newZoom);
   zoom = newZoom;
@@ -1565,10 +1612,19 @@ document.addEventListener('keyup', e => {
 // ─── Rebuild all layers (called on era collapse/expand) ───────────────────────
 function rebuildAll() {
   worldLayer.innerHTML = '';
-  setLayer.innerHTML   = '';
-  heroLayer.innerHTML  = '';
+  setLayer.innerHTML        = '';
+  heroLayer.innerHTML       = '';
+  heroNamesLayer.innerHTML  = '';
+  heroDotsScreen.innerHTML  = '';
   tickEls = null;
-  heroLabelData.length = 0;
+  heroLabelData.length  = 0;
+  heroDotData.length    = 0;
+  eraLabelEls       = [];
+  tickLabelEls      = [];
+  eventDotEls       = [];
+  eventLabelEls     = [];
+  convergencePinEls = [];
+  setImgEls         = [];
 
   TRACK_WIDTH = computeTrackWidth();
   TICK_X      = TICK_YEARS.map(yearToX);
@@ -1586,6 +1642,19 @@ function rebuildAll() {
   panX = clampPan(panX, zoom);
   applyTransform();
 }
+
+// ─── Resize / browser-zoom ────────────────────────────────────────────────────
+// Chrome's native zoom changes viewport.clientWidth in CSS px, which makes
+// panX clamping and stickyTrackX stale. Re-clamp and re-render on resize.
+let resizeRafId = null;
+window.addEventListener('resize', () => {
+  if (resizeRafId) return;
+  resizeRafId = requestAnimationFrame(() => {
+    resizeRafId = null;
+    panX = clampPan(panX, zoom);
+    applyTransform();
+  });
+});
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 track.style.width    = TRACK_WIDTH + 'px';
