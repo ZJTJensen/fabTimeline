@@ -13,7 +13,7 @@ const COLLAPSED_PX = 60;   // width of a collapsed era
 const collapsedEras = new Set();
 
 const ERAS = [
-  { id: 'era-1', start: -2000, end: -500, label: 'First Age'  },
+  { id: 'era-1', start: -750, end: -500, label: 'First Age'  },
   { id: 'era-2', start: -500, end: -100, label: 'Second Age' },
   { id: 'era-3', start: -100, end:    0, label: 'Third Age'  },
   { id: 'era-4', start:    0, end:  250, label: 'Fourth Age (Age of Man)' },
@@ -21,7 +21,6 @@ const ERAS = [
 ];
 
 const SEGMENTS = [
-  { eraId: 'era-1', start: -2000, end: -750, pxPerYr:   0.5 },
   { eraId: 'era-1', start:  -750, end: -500, pxPerYr:   3 },
   { eraId: 'era-2', start: -500, end: -100, pxPerYr:   3 },
   { eraId: 'era-3', start: -100, end:    0, pxPerYr:   8 },
@@ -66,8 +65,7 @@ let TRACK_WIDTH = computeTrackWidth();
 
 // ─── World / historical events ────────────────────────────────────────────────
 const WORLD_EVENTS = [
-  { year: -2000,   type: 'age',  label: 'First Age Begins\nHumans appear on Rathe'                                                                                                 },
-  { year: -1900,     label: 'Solana founded'                                                                                                 },
+  { year: -750,   type: 'age',  label: 'First Age Begins\nHumans appear on Rathe'                                                                                                 },
   { year: -500,   type: 'age',  label: 'First Age Ends\nSecond Age Begins'                                                                                                         },
   { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
   // known contradiction in the lore due to solana being founded thousands of years ago
@@ -728,9 +726,9 @@ const LANE_SPACING  = 18; // px between adjacent hero lanes
 const AXIS_PADDING  = 60; // px gap between the axis and the nearest hero lane
 
 // ─── Tick marks ───────────────────────────────────────────────────────────────
-// All tick year values, sorted ascending (start at -2000, the timeline origin)
+// All tick year values, sorted ascending (start at -750, the timeline origin)
 const TICK_YEARS = [
-  -2000, -750, -500, -400, -100, -50, 0,
+  -750, -500, -400, -100, -50, 0,
   50, 100, 150, 200, 220, 240, 248, 249,
   250, 250.3, 250.6, 251, 251.3, 251.6, 252, 252.3, 252.6,
   253, 253.3, 253.6, 254, 254.3, 254.6
