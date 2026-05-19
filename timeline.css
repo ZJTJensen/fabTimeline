@@ -25,15 +25,21 @@ html, body {
   font-family: var(--font-ui);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 
 /* ── Viewport ──────────────────────────────────────────────────────────────── */
 #viewport {
   position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
   inset: 0;
   overflow: hidden;
   cursor: grab;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
+  touch-action: none;
 }
 #viewport:active { cursor: grabbing; }
 
@@ -387,15 +393,13 @@ html, body {
 }
 
 #hero-svg path {
-  stroke-width: calc(2 * var(--inv-zoom, 1));
-  vector-effect: non-scaling-stroke;
+  stroke-width: 1.5;
   fill: none;
 }
 #hero-svg path.hero-hit-path {
   pointer-events: all;
   cursor: pointer;
   stroke-width: 12;
-  vector-effect: non-scaling-stroke;
   opacity: 0;
 }
 
@@ -556,6 +560,7 @@ button {
   padding: 6px 12px;
   font-size: 13px;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: border-color 0.15s, background 0.15s;
   font-family: var(--font-ui);
@@ -608,6 +613,7 @@ button.active:hover {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 14px;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   z-index: 100;
   max-height: 60vh;
@@ -676,6 +682,7 @@ button.active:hover {
 
 #menu-overlay {
   position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
   inset: 0;
   background: rgba(0,0,0,0.4);
   z-index: 200;
@@ -700,6 +707,7 @@ button.active:hover {
   overflow-y: auto;
   transform: translateX(-100%);
   transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
 }
 #menu-overlay.open #menu-panel {
@@ -792,6 +800,7 @@ button.active:hover {
   max-width: 300px;
   z-index: 300;
   pointer-events: none;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
@@ -859,7 +868,76 @@ a.tt-story-label:hover {
 
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+/* Tablets and smaller desktops */
+@media (max-width: 900px) {
+  #legend {
+    min-width: 170px;
+    max-height: 50vh;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  .legend-btn {
+    padding: 6px 10px;
+  }
+}
+
+/* Small screens / phones (landscape or small portrait) */
 @media (max-width: 600px) {
   #menu-panel { width: 85vw; }
   #legend { display: none; }
+
+  #ui {
+    top: 8px;
+    right: 8px;
+    gap: 5px;
+  }
+  .ui-row { gap: 5px; }
+
+  button {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+  button.icon-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+  #btn-reset, #btn-jump-modern {
+    padding: 5px 8px;
+  }
+}
+
+/* Very short viewports (landscape phones, small embedded windows) */
+@media (max-height: 500px) {
+  .world-event {
+    top: calc(50% - 80px);
+    height: 80px;
+  }
+  #legend {
+    max-height: 45vh;
+    bottom: 8px;
+    left: 8px;
+    padding: 6px 10px;
+  }
+  #ui {
+    top: 6px;
+    right: 6px;
+  }
+  button.icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+  button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-height: 350px) {
+  .world-event {
+    top: calc(50% - 50px);
+    height: 50px;
+  }
 }
