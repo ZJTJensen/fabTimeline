@@ -70,7 +70,7 @@ const WORLD_EVENTS = [
   { year: -100,   type: 'age',  label: 'Second Age Ends\nThird Age begins\nSolana founded'                                                                                         },
   { year:  -50,                 label: 'Apostate leaves Solana\nDemonastery founded'                                                                                               },
   { year:    0,   type: 'age',  label: 'End of Third Age\nWar of the Ancients'                                                                                                     },
-  { year:  250,   type: 'age',  label: 'Fourth Age (Age of Man) — Year 250\nWar for Solana begins\nFall of Ikaru, Isen & Aldengrove\nRathe & I\'arathael split'                    },
+  { year:  250,   type: 'age',  label: 'War for Solana begins'                    },
   { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
   { year:  252,                 label: 'Rathe unites against the Demonastery Invasion',                                                                          convergence: true },
   { year:  252.3,               label: 'Bright Lights — Metrix \nMultiple fates converge',                                                                       convergence: true },
