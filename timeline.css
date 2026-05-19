@@ -241,6 +241,13 @@ html, body {
 .world-event--collapsed .event-label { display: none; }
 .world-event--collapsed .event-dot   { opacity: 0.45; }
 
+/* Stacked events — shifted upward so overlapping labels don't collide */
+.world-event[data-stack-idx="1"] { transform: translateY(-50px); }
+.world-event[data-stack-idx="2"] { transform: translateY(-100px); }
+.world-event[data-stack-idx="3"] { transform: translateY(-150px); }
+/* Reset stacking when the events below are hidden (zoom-out or toggle) */
+#world-layer.world-events-hidden .world-event.age { transform: none; }
+
 /* World events hidden (zoom-based or toggle) */
 #world-layer.world-events-hidden .world-event:not(.age) { display: none; }
 

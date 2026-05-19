@@ -1,5 +1,6 @@
 ﻿// ─── Scale ───────────────────────────────────────────────────────────────────
 // Eras can be collapsed to COLLAPSED_PX. Fourth Age has two density segments.
+//   era-1  -2000→-750 (1250 yrs) 2 px/yr   = 2 500 px  (sparse — few events)
 //   era-1  -750→-500  (250 yrs)  8 px/yr   = 2 000 px
 //   era-2  -500→-100  (400 yrs)  8 px/yr   = 3 200 px
 //   era-3  -100→   0  (100 yrs)  8 px/yr   =   800 px
@@ -12,7 +13,7 @@ const COLLAPSED_PX = 60;   // width of a collapsed era
 const collapsedEras = new Set();
 
 const ERAS = [
-  { id: 'era-1', start: -750, end: -500, label: 'First Age'  },
+  { id: 'era-1', start: -2000, end: -500, label: 'First Age'  },
   { id: 'era-2', start: -500, end: -100, label: 'Second Age' },
   { id: 'era-3', start: -100, end:    0, label: 'Third Age'  },
   { id: 'era-4', start:    0, end:  250, label: 'Fourth Age (Age of Man)' },
@@ -20,8 +21,9 @@ const ERAS = [
 ];
 
 const SEGMENTS = [
-  { eraId: 'era-1', start: -750, end: -500, pxPerYr:   8 },
-  { eraId: 'era-2', start: -500, end: -100, pxPerYr:   8 },
+  { eraId: 'era-1', start: -2000, end: -750, pxPerYr:   0.5 },
+  { eraId: 'era-1', start:  -750, end: -500, pxPerYr:   3 },
+  { eraId: 'era-2', start: -500, end: -100, pxPerYr:   3 },
   { eraId: 'era-3', start: -100, end:    0, pxPerYr:   8 },
   { eraId: 'era-4', start:    0, end:  250, pxPerYr:  20 },
   { eraId: 'era-5', start:  250, end:  260, pxPerYr: 600 },
@@ -64,13 +66,20 @@ let TRACK_WIDTH = computeTrackWidth();
 
 // ─── World / historical events ────────────────────────────────────────────────
 const WORLD_EVENTS = [
-  { year: -750,   type: 'age',  label: 'First Age Begins\nHumans appear on Rathe'                                                                                                  },
+  { year: -2000,   type: 'age',  label: 'First Age Begins\nHumans appear on Rathe'                                                                                                 },
+  { year: -1900,     label: 'Solana founded'                                                                                                 },
   { year: -500,   type: 'age',  label: 'First Age Ends\nSecond Age Begins'                                                                                                         },
   { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
-  { year: -100,   type: 'age',  label: 'Second Age Ends\nThird Age begins\nSolana founded'                                                                                         },
-  { year:  -50,                 label: 'Apostate leaves Solana\nDemonastery founded'                                                                                               },
-  { year:    0,   type: 'age',  label: 'End of Third Age\nWar of the Ancients'                                                                                                     },
-  { year:  250,   type: 'age',  label: 'War for Solana begins'                    },
+  // known contradiction in the lore due to solana being founded thousands of years ago
+  { year: -100,   type: 'age',  label: 'Second Age Ends\nThird Age begins\n'                                                                                         },
+  { year: -100,                 label: 'The First Grand Magister, the Devout, leads Solana'                                                                                        },
+  { year:  -25,                 label: 'Apostate leaves Solana\nDemonastery founded'                                                                                               },
+  { year:  -25,                 label: 'The Second Grand Magister, the Adamant, leads Solana'                                                                                      },
+  { year:    0,   type: 'age',  label: 'End of Third Age\nWar of the Ancients\nIkaru Ffa'                                                                                          },
+  { year:  50,                  label: 'The Third Grand Magister, the Radiant, leads Solana'                                                                                       },
+  { year:  125,                 label: 'The Fourth Grand Magister, the Beloved, leads Solana'                                                                                      },
+  { year:  200,                 label: 'The Fifth Grand Magister, the Steadfast, leads Solana'                                                                                     },
+  { year:  250,   type: 'age',  label: 'War for Solana begins'                                                                                                                     },
   { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
   { year:  252,                 label: 'Rathe unites against the Demonastery Invasion',                                                                          convergence: true },
   { year:  252.3,               label: 'Bright Lights — Metrix \nMultiple fates converge',                                                                       convergence: true },
@@ -96,7 +105,8 @@ const SETS = [
   { year: 253.3, label: 'Rosetta',                short: 'ROS', img: 'assets/ros.png' },
   { year: 253.6, label: 'The Hunted',             short: 'HNT', img: 'assets/hnt.png' },
   { year: 254.0, label: 'High Seas',              short: 'SEA', img: 'assets/sea.png' },
-  { year: 258.3, label: 'Super Slam',             short: 'SUP', img: 'assets/sup.png' },
+  { year: 254.3, label: 'Super Slam',             short: 'SUP', img: 'assets/sup.png' },
+  { year: 254.6, label: 'Omens of the Third Age', short: 'OMN', img: 'assets/omn.png' },
 ];
 
 // ─── Heroes ───────────────────────────────────────────────────────────────────
@@ -699,12 +709,12 @@ const LANE_SPACING  = 18; // px between adjacent hero lanes
 const AXIS_PADDING  = 60; // px gap between the axis and the nearest hero lane
 
 // ─── Tick marks ───────────────────────────────────────────────────────────────
-// All tick year values, sorted ascending (start at -750, the timeline origin)
+// All tick year values, sorted ascending (start at -2000, the timeline origin)
 const TICK_YEARS = [
-  -750, -700, -600, -500, -400, -300, -200, -100, -50, 0,
+  -2000, -750, -500, -400, -100, -50, 0,
   50, 100, 150, 200, 220, 240, 248, 249,
   250, 250.3, 250.6, 251, 251.3, 251.6, 252, 252.3, 252.6,
-  253, 253.3, 253.6, 254, 254.3, 254.6, 255, 258.3,
+  253, 253.3, 253.6, 254, 254.3, 254.6
 ];
 let TICK_X = TICK_YEARS.map(yearToX);
 const TICK_MIN_SCREEN_PX = 50;
@@ -776,6 +786,18 @@ function buildWorldLayer() {
     worldLayer.appendChild(tick);
   });
 
+  // Assign stack indices for events sharing the same year.
+  // Within each year: non-age events first (index 0 = closest to axis),
+  // age/era events last (highest index = top of visual stack, furthest from axis).
+  {
+    const groups = {};
+    WORLD_EVENTS.forEach(ev => { (groups[ev.year] = groups[ev.year] || []).push(ev); });
+    Object.values(groups).forEach(group => {
+      group.sort((a, b) => (a.type === 'age' ? 1 : 0) - (b.type === 'age' ? 1 : 0));
+      group.forEach((ev, i) => { ev._stackIdx = i; });
+    });
+  }
+
   // World events
   WORLD_EVENTS.forEach(ev => {
     const inCollapsed = ERAS.some(
@@ -784,6 +806,7 @@ function buildWorldLayer() {
     const marker = document.createElement('div');
     marker.className = 'world-event ' + (ev.type ?? '') + (inCollapsed ? ' world-event--collapsed' : '') + (ev.convergence ? ' convergence' : '');
     marker.style.left = yearToX(ev.year) + 'px';
+    if (ev._stackIdx) marker.dataset.stackIdx = ev._stackIdx;
 
     const dot = document.createElement('div');
     dot.className = 'event-dot';
@@ -967,10 +990,11 @@ function buildHeroFanLayer() {
     // their details surface in the world event's hover tooltip instead.
     const visiblePts = pts.filter(pt => !convergenceYears.has(pt.ev.year));
     const uniquePositions = new Set(visiblePts.map(p => p.x)).size;
+    const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
     visiblePts.forEach((pt, ptIdx) => {
       const dot = document.createElement('div');
       const isFirst = ptIdx === 0 && uniquePositions > 1;
-      const isLast  = ptIdx === visiblePts.length - 1 && uniquePositions > 1;
+      const isLast  = ptIdx === visiblePts.length - 1 && uniquePositions > 1 && !actualLastIsConvergence;
       const isDeath = !!pt.ev.death;
       let cls = 'hero-dot';
       if (isDeath)       cls += ' hero-dot--death';
@@ -980,7 +1004,7 @@ function buildHeroFanLayer() {
       dot.dataset.hero = hero.id;
       dot.style.left = pt.x + 'px';
       dot.style.top  = pt.dotY + 'px';
-      const sharesEndPos = !isLast && pt.x === visiblePts[visiblePts.length - 1].x;
+      const sharesEndPos = !isLast && !actualLastIsConvergence && pt.x === visiblePts[visiblePts.length - 1].x;
       if (isDeath || isFirst || isLast) {
         dot.style.color = hero.color;
       } else if (!sharesEndPos) {
