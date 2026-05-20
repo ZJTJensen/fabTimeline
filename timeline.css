@@ -199,9 +199,12 @@ html, body {
 /* Age / era boundary — gold */
 .world-event.age::before {
   background: linear-gradient(to bottom, transparent 35%, rgba(246,224,94,0.38) 100%);
-  bottom: -360px; /* extends connector toward the axis when all diamonds share the uniform elevated position */
+  bottom: 7px; /* end connector at the diamond's top edge */
 }
 .world-event.age .event-dot {
+  position: absolute;
+  top: 153px;  /* 160px container − 7px = center of 14px dot lands on the axis */
+  left: -7px;  /* centers the 14px dot on the event's x position */
   width: 14px;
   height: 14px;
   background: #f6e05e;
@@ -221,6 +224,18 @@ html, body {
 .world-event.age:hover .event-label {
   border-top-color: rgba(246,224,94,0.85);
   box-shadow: 0 0 28px rgba(246,224,94,0.18), 0 4px 16px rgba(0,0,0,0.6);
+}
+
+/* Above-axis non-age events: label at top, diamond just below label, connector down to axis */
+.world-event:not(.world-event--below):not(.age) .event-label { order: 1; }
+.world-event:not(.world-event--below):not(.age) .event-dot {
+  order: 2;
+  margin-top: 4px;   /* gap between label bottom and diamond */
+}
+.world-event:not(.world-event--below):not(.age)::before {
+  top: 48px;   /* start connector below the label + diamond cluster */
+  bottom: 0;   /* extend all the way down to the axis */
+  background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.28) 65%);
 }
 
 /* Labels hidden by default — appear only on hover (when heroes are visible) */
@@ -253,7 +268,31 @@ html, body {
 .world-event[data-stack-idx="6"] { transform: translateY(-420px); }
 /* Reset stacking when the events below are hidden (zoom-out or toggle) */
 #world-layer.world-events-hidden .world-event.age { transform: none; }
-#world-layer.world-events-hidden .world-event.age::before { bottom: 10px; }
+#world-layer.world-events-hidden .world-event.age::before { bottom: 7px; }
+
+/* ── Below-axis world events ─────────────────────────────────────────────────── */
+.world-event--below {
+  top: 50%;                     /* container starts at the axis */
+  justify-content: flex-end;    /* dot + label sit at the bottom of the container */
+}
+.world-event--below .event-dot {
+  /* flows in flex just above the label — not pinned to the axis */
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+.world-event--below::before {
+  top: 0;      /* connector starts at the axis */
+  bottom: 48px; /* ends above the dot + label cluster */
+  background: linear-gradient(to top, transparent 35%, rgba(255,255,255,0.28) 100%);
+}
+.world-event--below .event-label {
+  transform-origin: center bottom;
+}
+/* Below events stack downward — these override the upward stacking rules above */
+.world-event--below[data-stack-idx="1"] { transform: translateY(70px); }
+.world-event--below[data-stack-idx="2"] { transform: translateY(140px); }
+.world-event--below[data-stack-idx="3"] { transform: translateY(210px); }
+.world-event--below[data-stack-idx="4"] { transform: translateY(280px); }
 
 /* World events hidden (zoom-based or toggle) */
 #world-layer.world-events-hidden .world-event:not(.age) { display: none; }

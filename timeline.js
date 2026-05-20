@@ -93,16 +93,16 @@ const WORLD_EVENTS = [
     { year:  -25,                 label: 'The Devout becomes the Apostate and leaves Solana\nDemonastery founded'                                                                                               },
     { year:  -25,                 label: 'The Second Grand Magister, the Adamant, leads Solana'                                                                                      },  
     { year:    0,   type: 'age',  label: 'End of Third Age\nFourth Age begins'                                                                                          },
-    { year:    0, label: 'War of the Ancients ends'},  
-    { year:    0, label: 'Ikaru Falls'},
-    { year:    0, label: 'Isen Falls'},
-    { year:    0, label: 'Aldengrove Falls'},
-    { year:    0, label: 'Dhani Empire Falls?'},
+    { year:    0, label: 'War of the Ancients ends'},
     { year:    0, label: 'Rathe, i’Arathael, and the Nebulus rift split apart'  },
+    { year:    0, label: 'Ikaru Falls',           below: true },
+    { year:    0, label: 'Isen Falls',            below: true },
+    { year:    0, label: 'Aldengrove Falls',      below: true },
+    { year:    0, label: 'Dhani Empire Falls?',   below: true },
     { year:  25,                 label: 'The Apostate sacrifices himself to hide the Demonastery from Solana, in the nebulus rift'                                                                                      },  
     { year:  50,                  label: 'The Third Grand Magister, the Radiant, leads Solana?'                                                                                       },
-    { year:  50, label: 'Metrix is founded?'},
-    { year:  40, label: 'The Pits start to form?'},
+    { year:  50, label: 'Metrix is founded?',        below: true },
+    { year:  40, label: 'The Pits start to form?',  below: true },
     { year:  100, label: 'Anarch Zeir Jorunies to the deepest recesses of the Pits??'},
     { year:  103, label: 'L’Apocalypta is founded??'},
     { year:  125,                 label: 'The Fourth Grand Magister, the Beloved, leads Solana?'                                                                                      },
@@ -845,19 +845,25 @@ function buildWorldLayer() {
     worldLayer.appendChild(tick);
   });
 
+  // Auto-alternate non-age world events above/below the axis (even index = above, odd = below)
+  {
+    const nonAge = WORLD_EVENTS.filter(ev => ev.type !== 'age').sort((a, b) => a.year - b.year);
+    nonAge.forEach((ev, i) => { ev._autoBelow = i % 2 !== 0; });
+  }
+
   // Assign stack indices for events sharing the same year.
-  // Within each year: non-age events first (index 0 = closest to axis),
-  // age/era events last (highest index = top of visual stack, furthest from axis).
+  // Above events: age first (idx 0 on axis), non-age stacked upward.
+  // Below events: stacked downward, indexed independently.
   {
     const groups = {};
     WORLD_EVENTS.forEach(ev => { (groups[ev.year] = groups[ev.year] || []).push(ev); });
     Object.values(groups).forEach(group => {
-      group.sort((a, b) => (a.type === 'age' ? 1 : 0) - (b.type === 'age' ? 1 : 0));
-      group.forEach((ev, i) => { ev._stackIdx = i; });
+      const above = group.filter(ev => !ev._autoBelow);
+      const below = group.filter(ev => ev._autoBelow);
+      above.sort((a, b) => (a.type === 'age' ? 0 : 1) - (b.type === 'age' ? 0 : 1));
+      above.forEach((ev, i) => { ev._stackIdx = i; });
+      below.forEach((ev, i) => { ev._stackIdx = i; });
     });
-    // Normalize all age-boundary diamonds to the same height (the highest one)
-    const maxAgeIdx = Math.max(0, ...WORLD_EVENTS.filter(e => e.type === 'age').map(e => e._stackIdx ?? 0));
-    WORLD_EVENTS.filter(e => e.type === 'age').forEach(e => { e._stackIdx = maxAgeIdx; });
   }
 
   // World events
@@ -866,7 +872,7 @@ function buildWorldLayer() {
       era => collapsedEras.has(era.id) && ev.year >= era.start && ev.year < era.end
     );
     const marker = document.createElement('div');
-    marker.className = 'world-event ' + (ev.type ?? '') + (inCollapsed ? ' world-event--collapsed' : '') + (ev.convergence ? ' convergence' : '');
+    marker.className = 'world-event ' + (ev.type ?? '') + (inCollapsed ? ' world-event--collapsed' : '') + (ev.convergence ? ' convergence' : '') + (ev._autoBelow ? ' world-event--below' : '');
     marker.style.left = yearToX(ev.year) + 'px';
     if (ev._stackIdx) marker.dataset.stackIdx = ev._stackIdx;
 
@@ -1051,7 +1057,7 @@ function buildHeroFanLayer() {
     nameLbl.addEventListener('click', e => {
       e.stopPropagation();
       const vw = viewport.clientWidth;
-      const minHeroZoom = (HERO_THRESHOLD + 0.2) * TRACK_WIDTH / 3000;
+      const minHeroZoom = 0.7;
       if (zoom < minHeroZoom) {
         zoom = Math.min(MAX_ZOOM, minHeroZoom);
         panX = clampPan(vw / 2 - pts[0].x * zoom, zoom);
@@ -1142,7 +1148,7 @@ function buildMenu() {
       if (!firstEvt) return;
       menuOverlay.classList.remove('open');
       const vw = viewport.clientWidth;
-      const minHeroZoom = (HERO_THRESHOLD + 0.2) * TRACK_WIDTH / 3000;
+      const minHeroZoom = 0.7;
       if (zoom < minHeroZoom) zoom = Math.min(MAX_ZOOM, minHeroZoom);
       panX = clampPan(vw / 2 - yearToX(firstEvt.year) * zoom, zoom);
       applyTransform();
@@ -1357,7 +1363,7 @@ function applyTransform() {
     setLayer.style.pointerEvents = showSetIcons ? '' : 'none';
   }
 
-  const showHeroes      = heroesOverride      !== null ? heroesOverride      : fraction > HERO_THRESHOLD;
+  const showHeroes      = heroesOverride      !== null ? heroesOverride      : zoom > 0.5;
   const showWorldEvents = worldEventsOverride !== null ? worldEventsOverride : fraction > WORLD_EVENT_THRESHOLD;
   const showAgeBounds   = ageBoundsOverride   !== null ? ageBoundsOverride   : true;
 
