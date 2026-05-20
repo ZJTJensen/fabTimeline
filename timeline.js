@@ -84,6 +84,7 @@ let TRACK_WIDTH = computeTrackWidth();
 const WORLD_EVENTS = [
   { year: -750,   type: 'age',  label: 'First Age Begins'                                                                                                 },
    { year:    -750, label: 'Humans appear on Rathe'},
+   { year:  -700, label: 'Volcor is founded??'},
   { year: -500,   type: 'age',  label: 'First Age Ends?\nSecond Age Begins?'                                                                                                         },
     { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
   { year: -100,   type: 'age',  label: 'Second Age Ends?\nThird Age begins?\n'                                                                                         },
@@ -101,10 +102,14 @@ const WORLD_EVENTS = [
     { year:  25,                 label: 'The Apostate sacrifices himself to hide the Demonastery from Solana, in the nebulus rift'                                                                                      },  
     { year:  50,                  label: 'The Third Grand Magister, the Radiant, leads Solana?'                                                                                       },
     { year:  50, label: 'Metrix is founded?'},
+    { year:  40, label: 'The Pits start to form?'},
+    { year:  100, label: 'Anarch Zeir Jorunies to the deepest recesses of the Pits??'},
+    { year:  103, label: 'L’Apocalypta is founded??'},
     { year:  125,                 label: 'The Fourth Grand Magister, the Beloved, leads Solana?'                                                                                      },
     { year:  180, label: 'Piper\'s Pier is founded?'},
     { year:  200,                 label: 'The Fifth Grand Magister, the Steadfast, leads Solana'                                                                                     },
-    
+    { year:  220, label: 'Hamilton Scarborough expedition into the Savage Lands??'                                                                                                                             },
+    { year:  230, label: 'Volcore Civil War?'},
     {  year: 247,  label: 'Viserai opens the Vitate gateway to i’Arathael', convergence: true                                                                                                      },
   { year:  250,   type: 'age',  label: 'War for Solana begins'                                                                                                                     },
     { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
@@ -113,6 +118,8 @@ const WORLD_EVENTS = [
     { year:  252.6,               label: 'The Deathmatch Arena',                                                                   convergence: true },
     { year:  253.3,               label: 'The Queen of Candlehold, Calvera, dies\n Candlehold opens to Aria for the first time',                                                                   convergence: true },
 ];
+
+
 
 // ─── Card sets ────────────────────────────────────────────────────────────────
 const SETS = [
@@ -313,7 +320,7 @@ const HEROES = [
     color: '#b45309',
     description: '',
     events: [
-      { year: 230.0, label: 'UPR: The Emperor communes with the Asier of Flames', url: 'https://legendarystories.net/main-story/dynasty/emperor-the-one-emperor.html' },
+      { year: 230, label: ' The Emperor communes with the Asier of Flames', url: 'https://legendarystories.net/main-story/dynasty/emperor-the-one-emperor.html' },
       { year: 251.3, label: 'The Emperor is assassinated', url: 'https://legendarystories.net/main-story/dynasty/ember-in-the-ash.html', death: true },
     ],
   },
@@ -584,6 +591,7 @@ const HEROES = [
       { year: 220, label: 'A cub, rhinar survives in the dence jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
       { year:   250, label: 'Established alpha predator of the jungle', url:'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
       { year: 252.6, label: 'Rhinar Enters the Deathmatch Arena', url: 'https://legendarystories.net/main-story/heavy-hitters/arena-announcements.html' },
+      { year: 254.8, label: 'Rhinar returns to the Savage Lands', url: 'https://legendarystories.net/short-stories/armory-decks/rhinar.html' },
     ],
   },
   {
