@@ -199,6 +199,7 @@ html, body {
 /* Age / era boundary — gold */
 .world-event.age::before {
   background: linear-gradient(to bottom, transparent 35%, rgba(246,224,94,0.38) 100%);
+  bottom: -240px; /* extends connector to the axis when all diamonds share the uniform elevated position */
 }
 .world-event.age .event-dot {
   width: 14px;
@@ -234,8 +235,8 @@ html, body {
 .world-event:hover {
   z-index: 200;
 }
-/* Always show labels when heroes are hidden (zoomed out) */
-#world-layer.world-labels-always .world-event:not(.world-event--collapsed) .event-label {
+/* Always show labels when heroes are hidden (zoomed out) — age boundaries stay hover-only */
+#world-layer.world-labels-always .world-event:not(.world-event--collapsed):not(.age) .event-label {
   opacity: 1;
 }
 
@@ -247,8 +248,12 @@ html, body {
 .world-event[data-stack-idx="1"] { transform: translateY(-50px); }
 .world-event[data-stack-idx="2"] { transform: translateY(-100px); }
 .world-event[data-stack-idx="3"] { transform: translateY(-150px); }
+.world-event[data-stack-idx="4"] { transform: translateY(-200px); }
+.world-event[data-stack-idx="5"] { transform: translateY(-250px); }
+.world-event[data-stack-idx="6"] { transform: translateY(-300px); }
 /* Reset stacking when the events below are hidden (zoom-out or toggle) */
 #world-layer.world-events-hidden .world-event.age { transform: none; }
+#world-layer.world-events-hidden .world-event.age::before { bottom: 10px; }
 
 /* World events hidden (zoom-based or toggle) */
 #world-layer.world-events-hidden .world-event:not(.age) { display: none; }

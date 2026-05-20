@@ -51,6 +51,23 @@ function yearToX(year) {
   return x;
 }
 
+function yearToAgeLabel(year) {
+  const ages = [
+    { start: -750, ageNum: 1 },
+    { start: -500, ageNum: 2 },
+    { start: -100, ageNum: 3 },
+    { start:    0, ageNum: 4 },
+  ];
+  let currentAge = ages[0];
+  for (const age of ages) {
+    if (year >= age.start) currentAge = age;
+    else break;
+  }
+  const raw = year - currentAge.start + 1;
+  const displayYear = Number.isInteger(year) ? raw : parseFloat(raw.toFixed(1));
+  return `${displayYear} ${currentAge.ageNum}A`;
+}
+
 function computeTrackWidth() {
   let w = TRACK_OFFSET + 100; // left + right margin
   for (const era of ERAS) {
@@ -65,23 +82,36 @@ let TRACK_WIDTH = computeTrackWidth();
 
 // ─── World / historical events ────────────────────────────────────────────────
 const WORLD_EVENTS = [
-  { year: -750,   type: 'age',  label: 'First Age Begins\nHumans appear on Rathe'                                                                                                 },
-  { year: -500,   type: 'age',  label: 'First Age Ends\nSecond Age Begins'                                                                                                         },
-  { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
-  // known contradiction in the lore due to solana being founded thousands of years ago
-  { year: -100,   type: 'age',  label: 'Second Age Ends\nThird Age begins\n'                                                                                         },
-  { year: -100,                 label: 'The First Grand Magister, the Devout, leads Solana'                                                                                        },
-  { year:  -25,                 label: 'Apostate leaves Solana\nDemonastery founded'                                                                                               },
-  { year:  -25,                 label: 'The Second Grand Magister, the Adamant, leads Solana'                                                                                      },
-  { year:    0,   type: 'age',  label: 'End of Third Age\nWar of the Ancients\nIkaru Ffa'                                                                                          },
-  { year:  50,                  label: 'The Third Grand Magister, the Radiant, leads Solana'                                                                                       },
-  { year:  125,                 label: 'The Fourth Grand Magister, the Beloved, leads Solana'                                                                                      },
-  { year:  200,                 label: 'The Fifth Grand Magister, the Steadfast, leads Solana'                                                                                     },
+  { year: -750,   type: 'age',  label: 'First Age Begins'                                                                                                 },
+   { year:    -750, label: 'Humans appear on Rathe'},
+  { year: -500,   type: 'age',  label: 'First Age Ends?\nSecond Age Begins?'                                                                                                         },
+    { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
+  { year: -100,   type: 'age',  label: 'Second Age Ends?\nThird Age begins?\n'                                                                                         },
+    { year: -100,                 label: 'The First Grand Magister, the Devout, leads Solana'                                                                                        },
+    { year:  -60,                 label: 'Valahai is founded'                                                                                      },
+    { year:  -25,                 label: 'The Devout becomes the Apostate and leaves Solana\nDemonastery founded'                                                                                               },
+    { year:  -25,                 label: 'The Second Grand Magister, the Adamant, leads Solana'                                                                                      },  
+    { year:    0,   type: 'age',  label: 'End of Third Age\nFourth Age begins'                                                                                          },
+    { year:    0, label: 'War of the Ancients ends'},  
+    { year:    0, label: 'Ikaru Falls'},
+    { year:    0, label: 'Isen Falls'},
+    { year:    0, label: 'Aldengrove Falls'},
+    { year:    0, label: 'Dhani Empire Falls?'},
+    { year:    0, label: 'Rathe, i’Arathael, and the Nebulus rift split apart'  },
+    { year:  25,                 label: 'The Apostate sacrifices himself to hide the Demonastery from Solana, in the nebulus rift'                                                                                      },  
+    { year:  50,                  label: 'The Third Grand Magister, the Radiant, leads Solana?'                                                                                       },
+    { year:  50, label: 'Metrix is founded?'},
+    { year:  125,                 label: 'The Fourth Grand Magister, the Beloved, leads Solana?'                                                                                      },
+    { year:  180, label: 'Piper\'s Pier is founded?'},
+    { year:  200,                 label: 'The Fifth Grand Magister, the Steadfast, leads Solana'                                                                                     },
+    
+    {  year: 247,  label: 'Viserai opens the Vitate gateway to i’Arathael', convergence: true                                                                                                      },
   { year:  250,   type: 'age',  label: 'War for Solana begins'                                                                                                                     },
-  { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
-  { year:  252,                 label: 'Rathe unites against the Demonastery Invasion',                                                                          convergence: true },
-  { year:  252.3,               label: 'Bright Lights — Metrix \nMultiple fates converge',                                                                       convergence: true },
-  { year:  252.6,               label: 'The Deathmatch Arena\nRathe\'s heroes enter the ring',                                                                   convergence: true },
+    { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
+    { year:  252,                 label: 'Rathe unites against the Demonastery Invasion',                                                                          convergence: true },
+    { year:  252.3,               label: 'Bright Lights — Metrix \nMultiple fates converge',                                                                       convergence: true },
+    { year:  252.6,               label: 'The Deathmatch Arena',                                                                   convergence: true },
+    { year:  253.3,               label: 'The Queen of Candlehold, Calvera, dies\n Candlehold opens to Aria for the first time',                                                                   convergence: true },
 ];
 
 // ─── Card sets ────────────────────────────────────────────────────────────────
@@ -801,7 +831,7 @@ function buildWorldLayer() {
     tick.style.left = yearToX(yr) + 'px';
     tick.dataset.minZoom = tickMinZoom(i);
     const lbl = document.createElement('span');
-    lbl.textContent = yr < 0 ? Math.abs(yr) + ' BWA' : (yr === 0 ? '0 WA' : yr + ' AWA');
+    lbl.textContent = yearToAgeLabel(yr);
     tick.appendChild(lbl);
     tickLabelEls.push(lbl);
     worldLayer.appendChild(tick);
@@ -817,6 +847,9 @@ function buildWorldLayer() {
       group.sort((a, b) => (a.type === 'age' ? 1 : 0) - (b.type === 'age' ? 1 : 0));
       group.forEach((ev, i) => { ev._stackIdx = i; });
     });
+    // Normalize all age-boundary diamonds to the same height (the highest one)
+    const maxAgeIdx = Math.max(0, ...WORLD_EVENTS.filter(e => e.type === 'age').map(e => e._stackIdx ?? 0));
+    WORLD_EVENTS.filter(e => e.type === 'age').forEach(e => { e._stackIdx = maxAgeIdx; });
   }
 
   // World events
@@ -884,7 +917,7 @@ function buildSetLayer() {
       img.alt = s.label;
       img.style.top = -(102 + i * 98) + 'px'; // 12px gap + 90px img + i*(90+8)
       img.addEventListener('error', () => { img.style.display = 'none'; });
-      img.addEventListener('click', ev => showTooltip(ev, s.label, 'Year ' + s.year));
+      img.addEventListener('click', ev => showTooltip(ev, s.label, yearToAgeLabel(s.year)));
       col.appendChild(img);
       setImgEls.push(img);
 
@@ -978,9 +1011,25 @@ function buildHeroFanLayer() {
       hitPath.dataset.hero = hero.id;
       hitPath.addEventListener('click', e => {
         e.stopPropagation();
+        if (heroLayer.style.opacity === '0' || !visibleHeroes.has(hero.id)) return;
         jumpToNextEvent(hero);
       });
       heroSVG.appendChild(hitPath);
+    }
+
+    // ── Vertical stub for heroes whose first event is at a convergence year ──
+    if (convergenceYears.has(pts[0].ev.year)) {
+      const stubX = pts[0].x;
+      const stub = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      stub.setAttribute('x1', stubX);
+      stub.setAttribute('y1', laneYVal);
+      stub.setAttribute('x2', stubX);
+      stub.setAttribute('y2', 0);
+      stub.setAttribute('stroke', hero.color);
+      stub.setAttribute('stroke-width', '1.5');
+      stub.setAttribute('opacity', '0.85');
+      stub.dataset.hero = hero.id;
+      heroSVG.appendChild(stub);
     }
 
     // ── Name label at the first event ─────────────────────────────────────────
@@ -1041,7 +1090,7 @@ function buildHeroFanLayer() {
 
       dot.addEventListener('click', e => {
         e.stopPropagation();
-        showTooltip(e, pt.ev.label, `${hero.name} · Year ${pt.ev.year}`, hero.color);
+        showTooltip(e, pt.ev.label, `${hero.name} · ${yearToAgeLabel(pt.ev.year)}`, hero.color);
         if (pt.ev.url) window.open(pt.ev.url, '_blank', 'noopener');
       });
 
