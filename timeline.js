@@ -707,7 +707,7 @@ function applyTransform() {
   eventDotEls.forEach(el       => { el.style.transform = `scaleX(${invZ}) rotate(45deg)`; });
   eventLabelEls.forEach(el     => { el.style.transform = scaleX; });
   convergencePinEls.forEach(el => { el.style.transform = centeredPin; });
-  setImgEls.forEach(el         => { el.style.transform = scaleX; });
+  setImgEls.forEach(el         => { el.style.transform = `translateX(${-45 * invZ}px) scaleX(${invZ})`; });
 
   if (!tickEls) tickEls = Array.from(worldLayer.querySelectorAll('.tick'));
   tickEls.forEach(tick => {
