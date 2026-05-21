@@ -82,12 +82,12 @@ let TRACK_WIDTH = computeTrackWidth();
 
 // ─── World / historical events ────────────────────────────────────────────────
 const WORLD_EVENTS = [
-  { year: -750,   type: 'age',  label: 'First Age Begins'                                                                                                 },
-   { year:    -750, label: 'Humans appear on Rathe'},
-   { year:  -700, label: 'Volcor is founded??'},
-  { year: -500,   type: 'age',  label: 'First Age Ends?\nSecond Age Begins?'                                                                                                         },
+    { year: -750,   type: 'age',  label: 'First Age Begins'                                                                                                 },
+    { year:    -750, label: 'Humans appear on Rathe'},
+    { year:  -700, label: 'Volcor is founded??'},
+    { year: -500,   type: 'age',  label: 'First Age Ends?\nSecond Age Begins?'                                                                                                         },
     { year: -400,                 label: 'Ikaru founded'                                                                                                                             },
-  { year: -100,   type: 'age',  label: 'Second Age Ends?\nThird Age begins?\n'                                                                                         },
+    { year: -100,   type: 'age',  label: 'Second Age Ends?\nThird Age begins?\n'                                                                                         },
     { year: -100,                 label: 'The First Grand Magister, the Devout, leads Solana'                                                                                        },
     { year:  -60,                 label: 'Valahai is founded'                                                                                      },
     { year:  -25,                 label: 'The Devout becomes the Apostate and leaves Solana\nDemonastery founded'                                                                                               },
@@ -111,7 +111,7 @@ const WORLD_EVENTS = [
     { year:  220, label: 'Hamilton Scarborough expedition into the Savage Lands??'                                                                                                                             },
     { year:  230, label: 'Volcore Civil War?'},
     {  year: 247,  label: 'Viserai opens the Vitate gateway to i’Arathael', convergence: true                                                                                                      },
-  { year:  250,   type: 'age',  label: 'War for Solana begins'                                                                                                                     },
+    { year:  250,   type: 'age',  label: 'War for Solana begins'                                                                                                                     },
     { year:  250.6,               label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria',                                                            convergence: true },
     { year:  252,                 label: 'Rathe unites against the Demonastery Invasion',                                                                          convergence: true },
     { year:  252.3,               label: 'Bright Lights — Metrix \nMultiple fates converge',                                                                       convergence: true },
@@ -279,7 +279,7 @@ const HEROES = [
     color: '#00d4ff',
     description: '',
     events: [
-      { year: 247,  label: 'Teenage inventor in Metrix', url: 'https://legendarystories.net/main-story/arcane-rising/stroke-of-genius.html'},
+      { year: 247,  label: 'Teenage inventor in Metrix', url: 'https://legendarystories.net/main-story/arcane-rising/stroke-of-genius.html', noConvergence: true },
       { year: 252.3, label: 'Dash joins forces with Maxx Nitro and discovers Data Doll', url: 'https://legendarystories.net/main-story/bright-lights/synthetic-futures.html'},
       { year: 254, label: 'Dash attempts to show off an invention for Teklo Industries', url: 'https://legendarystories.net/main-story/armory-decks/boom-town-boom.html'}
     ],
@@ -320,7 +320,7 @@ const HEROES = [
     color: '#b45309',
     description: '',
     events: [
-      { year: 230, label: ' The Emperor communes with the Asier of Flames', url: 'https://legendarystories.net/main-story/dynasty/emperor-the-one-emperor.html' },
+      { year: 230, label: 'The Emperor communes with the Asier of Flames', url: 'https://legendarystories.net/main-story/dynasty/emperor-the-one-emperor.html' },
       { year: 251.3, label: 'The Emperor is assassinated', url: 'https://legendarystories.net/main-story/dynasty/ember-in-the-ash.html', death: true },
     ],
   },
@@ -330,7 +330,7 @@ const HEROES = [
     description: '',
     events: [
        { year: -500, label: 'Fumei amd Nuu study together at the Imortal Lunar Shrine', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-4-the-hare-and-the-snake.html'},
-       { year: 252.3, label: 'Enigma hunts down the evil spirit Nuu', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-2-the-tapestry-unfolds.html'},
+       { year: 254, label: 'Enigma hunts down the evil spirit Nuu', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-2-the-tapestry-unfolds.html'},
     ],
   },
   {
@@ -424,8 +424,8 @@ const HEROES = [
     color: '#f6ad55',
     description: '',
     events: [
-      { year: 240, label: ' Kano\'s story begins in Volcor', url: 'https://legendarystories.net/main-story/arcane-rising/smoke-and-mirrors.html'},
-       { year: 250, label: 'Volcor is attacked from within', url: 'https://legendarystories.net/main-story/arcane-rising/from-the-ashes.html'}
+      { year: 240, label: 'Kano\'s story begins in Volcor', url: 'https://legendarystories.net/main-story/arcane-rising/smoke-and-mirrors.html'},
+      { year: 250, label: 'Volcor is attacked from within', url: 'https://legendarystories.net/main-story/arcane-rising/from-the-ashes.html'}
     ],
   },
   {
@@ -523,8 +523,7 @@ const HEROES = [
     description: '',
     events: [
       { year: -500, label: 'Fumei amd Nuu study together at the Imortal Lunar Shrine', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-4-the-hare-and-the-snake.html'},
-      { year: 252.3, label: 'Enigma hunts down the evil spirit Nuu', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-2-the-tapestry-unfolds.html'},
-    
+      { year: 254, label: 'Enigma hunts down the evil spirit Nuu', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-2-the-tapestry-unfolds.html'},
     ],
   },
   {
@@ -533,7 +532,7 @@ const HEROES = [
     description: '',
     events: [
       { year: 0, label: 'Oldhim, fights off the old ones', url: 'https://legendarystories.net/main-story/armory-decks/battle-of-isenloft.html' },
-      { year: 250.3, label: ' Oldhim thaws from his frozen tomb at Isenloft', url: 'https://legendarystories.net/main-story/tales-of-aria/the-broken-covenant.html' },
+      { year: 250.3, label: 'Oldhim thaws from his frozen tomb at Isenloft', url: 'https://legendarystories.net/main-story/tales-of-aria/the-broken-covenant.html' },
       { year: 250.6, label: 'Briar joins Lexi to discover the secrets of Aria', url: 'https://legendarystories.net/main-story/everfest/a-grand-adventure.html' },
       {year: 252, label: 'Heros fights against the shadow', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
     ],
@@ -554,7 +553,6 @@ const HEROES = [
     events: [
       { year: 253.3, label: 'Oscilio is discovered by Aurora', url: 'https://legendarystories.net/main-story/rosetta/secret-of-the-aetherscribes.html' },
       { year: 254.6, label: 'Aurora and Oscilio fight against the Omens', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/omens-in-the-sky.html' },
-    
     ],
   },
   {
@@ -624,7 +622,7 @@ const HEROES = [
     description: '',
     events: [
       { year: 190, label: 'Teklovossen is a brilliant inventor in Metrix', url: 'https://legendarystories.net/main-story/bright-lights/the-dynamic-man.html' },
-      { year: 252.3, label:  'Teklovossen awakens after years of slumber to become the mecropotent', 
+      { year: 252.3, label: 'Teklovossen awakens after years of slumber to become the mecropotent',
         url: 'https://legendarystories.net/main-story/bright-lights/P%CC%B8%CD%8D%CC%AC%CC%AD%CC%AD%CC%BA%CD%89%CC%A3%CC%8C%CC%90%CC%BE%CC%8C%CD%86%CC%9Ar%CC%B4%CD%94%CD%8D%CD%90%C8%AF%CC%B4%CC%A4%CC%B0%CD%A0t%CC%B5%CC%B0%CC%98%CD%91%C3%B5%CC%B6%CD%8D%CD%87c%CC%B6%CC%9F%CD%92o%CC%B6%CC%AA%CC%B3%CD%8Bl%CC%B6%CC%97%CC%91%20%CC%B4%CC%AE%CC%93%CD%98A%CC%B4%CC%9E%CC%97%CD%86%E1%B9%97%CC%B7%CC%A2%CD%95%CC%88%CC%81%C4%93%CC%B5%CD%8D%CC%BF%C5%95%CC%B6%CC%A9%CC%81%E1%B8%AD%CC%B4%CC%A7%CD%90%CD%82o%CC%B8%CD%99%CC%96%CC%90%CD%98n%CC%B4%CC%9E%CC%BA%CD%8B.html'
        },
     ],
@@ -683,7 +681,7 @@ const HEROES = [
     color: '#b794f4',
     description: '',
     events: [
-      { year: 246,  label: 'Viserai is born ', url: 'https://legendarystories.net/main-story/arcane-rising/birth-of-the-arknight.html' },
+      { year: 246, label: 'Viserai is born', url: 'https://legendarystories.net/main-story/arcane-rising/birth-of-the-arknight.html' },
       { year: 247,  label: 'Viserai opens the Vitate gateway', url: 'https://legendarystories.net/main-story/arcane-rising/return-of-the-shadow.html' },
     ],
   },
@@ -701,7 +699,7 @@ const HEROES = [
     color: '#92400e',
     description: '',
     events: [
-      { year: 251.3, label: ' Yoji fails to protect the Imperial palace', url: 'https://legendarystories.net/main-story/dynasty/vow-of-vigilence.html' },
+      { year: 251.3, label: 'Yoji fails to protect the Imperial palace', url: 'https://legendarystories.net/main-story/dynasty/vow-of-vigilence.html' },
     ],
   },
   {
@@ -709,16 +707,15 @@ const HEROES = [
     color: '#4c1d95',
     description: '',
     events: [
-      { year: 253, label: 'Zen walks every inch of Misteria\'s lands', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-1-the-tiger-in-the-mist.html'},
+      { year: 254, label: 'Zen walks every inch of Misteria\'s lands', url: 'https://legendarystories.net/main-story/part-the-mistveil/part-1-the-tiger-in-the-mist.html'},
     ],
   },
-    {
+  {
     id: 'zyggy', name: 'Zyggy, Starlight', class: ['Illusionist'], talent:['Lightning'], region: 'Aria',
     color: '#635fb8',
     description: '',
     events: [
       { year: 254.6, label: 'Aurora and Oscilio find Zyggy in the Auric keep', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/omens-in-the-sky.html' },
-    
     ],
   },
 ];
@@ -736,6 +733,7 @@ let heroesOverride      = null;
 let worldEventsOverride = null;
 let ageBoundsOverride   = null;
 let setIconsOverride    = null;
+let prevZoom            = null; // used to detect actual zoom changes in applyTransform
 
 // Hero fan layer handles (set by buildHeroFanLayer)
 let heroSVG       = null;
@@ -849,18 +847,19 @@ function buildWorldLayer() {
   {
     const nonAge = WORLD_EVENTS.filter(ev => ev.type !== 'age').sort((a, b) => a.year - b.year);
     nonAge.forEach((ev, i) => { ev._autoBelow = i % 2 !== 0; });
+    // Convergence events always sit above the axis — their dot is pinned, not in flex flow
+    WORLD_EVENTS.filter(ev => ev.convergence).forEach(ev => { ev._autoBelow = false; });
   }
 
   // Assign stack indices for events sharing the same year.
-  // Above events: age first (idx 0 on axis), non-age stacked upward.
-  // Below events: stacked downward, indexed independently.
+  // Age and convergence events have priority 0 (sit on the axis); others stack upward.
   {
     const groups = {};
     WORLD_EVENTS.forEach(ev => { (groups[ev.year] = groups[ev.year] || []).push(ev); });
     Object.values(groups).forEach(group => {
       const above = group.filter(ev => !ev._autoBelow);
       const below = group.filter(ev => ev._autoBelow);
-      above.sort((a, b) => (a.type === 'age' ? 0 : 1) - (b.type === 'age' ? 0 : 1));
+      above.sort((a, b) => ((a.type === 'age' || a.convergence) ? 0 : 1) - ((b.type === 'age' || b.convergence) ? 0 : 1));
       above.forEach((ev, i) => { ev._stackIdx = i; });
       below.forEach((ev, i) => { ev._stackIdx = i; });
     });
@@ -874,6 +873,7 @@ function buildWorldLayer() {
     const marker = document.createElement('div');
     marker.className = 'world-event ' + (ev.type ?? '') + (inCollapsed ? ' world-event--collapsed' : '') + (ev.convergence ? ' convergence' : '') + (ev._autoBelow ? ' world-event--below' : '');
     marker.style.left = yearToX(ev.year) + 'px';
+    marker.dataset.year = ev.year;
     if (ev._stackIdx) marker.dataset.stackIdx = ev._stackIdx;
 
     const dot = document.createElement('div');
@@ -891,6 +891,20 @@ function buildWorldLayer() {
       if (ev.convergence) showConvergenceTooltip(e, ev);
       else showTooltip(e, ev.label, '');
     });
+    if (ev.convergence) {
+      marker.addEventListener('mouseenter', () => highlightConvergence(ev.year));
+      marker.addEventListener('mouseleave', clearHeroHighlight);
+    }
+    if (ev.type === 'age') {
+      marker.addEventListener('mouseenter', () => {
+        heroNamesLayer.style.zIndex = '0';
+        heroDotsScreen.style.zIndex = '0';
+      });
+      marker.addEventListener('mouseleave', () => {
+        heroNamesLayer.style.zIndex = '';
+        heroDotsScreen.style.zIndex = '';
+      });
+    }
 
     worldLayer.appendChild(marker);
   });
@@ -900,8 +914,11 @@ function buildWorldLayer() {
     const pin = document.createElement('div');
     pin.className = 'convergence-pin';
     pin.style.left = yearToX(ev.year) + 'px';
+    pin.dataset.year = ev.year;
     pin.title = ev.label;
     pin.addEventListener('click', e => showConvergenceTooltip(e, ev));
+    pin.addEventListener('mouseenter', () => highlightConvergence(ev.year));
+    pin.addEventListener('mouseleave', clearHeroHighlight);
     worldLayer.appendChild(pin);
     convergencePinEls.push(pin);
   });
@@ -995,7 +1012,7 @@ function buildHeroFanLayer() {
     const laneYVal = evtY(hero.id);
     const pts = evts.map(ev => ({
       x:    yearToX(ev.year),
-      y:    convergenceYears.has(ev.year) ? 0 : laneYVal, // path dips to axis at convergence
+      y:    convergenceYears.has(ev.year) && !ev.noConvergence ? 0 : laneYVal, // path dips to axis at convergence
       dotY: laneYVal,                                      // dot always stays on the hero's lane
       ev,
     }));
@@ -1032,7 +1049,7 @@ function buildHeroFanLayer() {
     }
 
     // ── Vertical stub for heroes whose first event is at a convergence year ──
-    if (convergenceYears.has(pts[0].ev.year)) {
+    if (convergenceYears.has(pts[0].ev.year) && !pts[0].ev.noConvergence) {
       const stubX = pts[0].x;
       const stub = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       stub.setAttribute('x1', stubX);
@@ -1066,6 +1083,8 @@ function buildHeroFanLayer() {
         animatePanTo(clampPan(vw / 2 - pts[0].x * zoom, zoom));
       }
     });
+    nameLbl.addEventListener('mouseenter', () => highlightHero(hero.id));
+    nameLbl.addEventListener('mouseleave', clearHeroHighlight);
     heroNamesLayer.appendChild(nameLbl);
     heroLabelData.push({ el: nameLbl, heroId: hero.id, firstX: pts[0].x, lastX: pts[pts.length - 1].x, baseX: pts[0].x + 8, dotY: pts[0].dotY });
 
@@ -1107,6 +1126,8 @@ function buildHeroFanLayer() {
         showTooltip(e, pt.ev.label, `${hero.name} · ${yearToAgeLabel(pt.ev.year)}`, hero.color);
         if (pt.ev.url) window.open(pt.ev.url, '_blank', 'noopener');
       });
+      dot.addEventListener('mouseenter', () => highlightHero(hero.id));
+      dot.addEventListener('mouseleave', clearHeroHighlight);
 
       heroDotsScreen.appendChild(dot);
       heroDotData.push({ el: dot, heroId: hero.id, trackX: pt.x, dotY: pt.dotY });
@@ -1241,7 +1262,7 @@ function showConvergenceTooltip(e, worldEv) {
   const continuesFor = [];
 
   HEROES.forEach(hero => {
-    const evtsAtYear = hero.events.filter(ev => ev.year === worldEv.year);
+    const evtsAtYear = hero.events.filter(ev => ev.year === worldEv.year && !ev.noConvergence);
     if (evtsAtYear.length === 0) return;
 
     const maxYear = Math.max(...hero.events
@@ -1297,7 +1318,7 @@ function showConvergenceTooltip(e, worldEv) {
     sec.className = 'tt-section';
     const hdr = document.createElement('div');
     hdr.className = 'tt-section-header';
-    hdr.textContent = "Last event for:";
+    hdr.textContent = 'Last event for:';
     const names = document.createElement('div');
     names.className = 'tt-hero-names';
     names.textContent = lastFor.join(', ');
@@ -1311,7 +1332,7 @@ function showConvergenceTooltip(e, worldEv) {
     sec.className = 'tt-section';
     const hdr = document.createElement('div');
     hdr.className = 'tt-section-header';
-    hdr.textContent = "Story continues:";
+    hdr.textContent = 'Story continues:';
     const names = document.createElement('div');
     names.className = 'tt-hero-names';
     names.textContent = continuesFor.join(', ');
@@ -1344,6 +1365,58 @@ document.addEventListener('click', () => {
   if (activeTooltip) { activeTooltip.style.display = 'none'; activeTooltip = null; }
 });
 
+// ─── Hero hover highlight ─────────────────────────────────────────────────────
+function highlightHero(heroId) {
+  const hero = HEROES.find(h => h.id === heroId);
+  if (!hero) return;
+
+  heroSVG.classList.add('has-highlight');
+  heroDotsScreen.classList.add('has-highlight');
+  heroNamesLayer.classList.add('has-highlight');
+
+  heroSVG.querySelectorAll(`[data-hero="${heroId}"]`).forEach(el => el.classList.add('highlighted'));
+  heroDotsScreen.querySelectorAll(`[data-hero="${heroId}"]`).forEach(el => el.classList.add('highlighted'));
+  heroNamesLayer.querySelectorAll(`[data-hero="${heroId}"]`).forEach(el => el.classList.add('highlighted'));
+
+  const heroYears = new Set(hero.events.filter(e => e.year !== null).map(e => e.year));
+  worldLayer.querySelectorAll('.world-event:not(.age), .convergence-pin').forEach(el => {
+    if (heroYears.has(Number(el.dataset.year))) el.classList.add('hero-event-highlighted');
+  });
+}
+
+function clearHeroHighlight() {
+  if (!heroSVG) return;
+  heroSVG.classList.remove('has-highlight');
+  heroDotsScreen.classList.remove('has-highlight');
+  heroNamesLayer.classList.remove('has-highlight');
+  heroSVG.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  heroDotsScreen.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  heroNamesLayer.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  worldLayer.querySelectorAll('.hero-event-highlighted').forEach(el => el.classList.remove('hero-event-highlighted'));
+}
+
+function highlightConvergence(year) {
+  if (!heroSVG) return;
+  const heroIds = new Set(
+    HEROES.filter(h => h.events.some(e => e.year === year && !e.noConvergence)).map(h => h.id)
+  );
+  if (heroIds.size === 0) return;
+
+  heroSVG.classList.add('has-highlight');
+  heroDotsScreen.classList.add('has-highlight');
+  heroNamesLayer.classList.add('has-highlight');
+
+  heroSVG.querySelectorAll('[data-hero]').forEach(el => {
+    if (heroIds.has(el.dataset.hero)) el.classList.add('highlighted');
+  });
+  heroDotsScreen.querySelectorAll('[data-hero]').forEach(el => {
+    if (heroIds.has(el.dataset.hero)) el.classList.add('highlighted');
+  });
+  heroNamesLayer.querySelectorAll('[data-hero]').forEach(el => {
+    if (heroIds.has(el.dataset.hero)) el.classList.add('highlighted');
+  });
+}
+
 // Cached tick elements so we don't query the DOM every frame
 let tickEls = null;
 
@@ -1355,6 +1428,14 @@ function applyTransform() {
 
   const effectivePxPerYrModern = 600 * zoom;
   const fraction = effectivePxPerYrModern / (TRACK_WIDTH / 5);
+
+  // If zoom has changed and a manually-hidden item should now be visible, restore auto behaviour
+  if (zoom !== prevZoom) {
+    if (worldEventsOverride === false && fraction > WORLD_EVENT_THRESHOLD) worldEventsOverride = null;
+    if (setIconsOverride    === false && fraction > SET_THRESHOLD)         setIconsOverride    = null;
+    if (heroesOverride      === false && zoom > 0.5)                       heroesOverride      = null;
+    prevZoom = zoom;
+  }
 
   const showSetIcons    = setIconsOverride     !== null ? setIconsOverride    : fraction > SET_THRESHOLD;
   const newSetOpacity = showSetIcons ? '1' : '0';
@@ -1672,6 +1753,7 @@ document.addEventListener('keyup', e => {
 
 // ─── Rebuild all layers (called on era collapse/expand) ───────────────────────
 function rebuildAll() {
+  clearHeroHighlight();
   worldLayer.innerHTML = '';
   setLayer.innerHTML        = '';
   heroLayer.innerHTML       = '';
