@@ -172,6 +172,13 @@ html, body {
 .world-event:hover .event-dot {
   box-shadow: 0 0 0 3px rgba(255,255,255,0.4), 0 0 22px rgba(215,215,240,0.8);
 }
+.event-dot--no-url {
+  background: rgba(120, 120, 140, 0.5);
+  box-shadow: none;
+}
+.world-event:hover .event-dot--no-url {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 0 12px rgba(180,180,200,0.4);
+}
 
 .world-event .event-label {
   font-size: 11px;

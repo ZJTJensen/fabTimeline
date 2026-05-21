@@ -223,7 +223,7 @@ function buildWorldLayer() {
     if (ev._stackIdx) marker.dataset.stackIdx = ev._stackIdx;
 
     const dot = document.createElement('div');
-    dot.className = 'event-dot';
+    dot.className = 'event-dot' + (!ev.convergence && ev.url === '' ? ' event-dot--no-url' : '');
     marker.appendChild(dot);
     eventDotEls.push(dot);
 
@@ -235,7 +235,10 @@ function buildWorldLayer() {
 
     marker.addEventListener('click', e => {
       if (ev.convergence) showConvergenceTooltip(e, ev);
-      else showTooltip(e, ev.label, '');
+      else {
+        showTooltip(e, ev.label, '');
+        if (ev.url) window.open(ev.url, '_blank', 'noopener');
+      }
     });
     if (ev.convergence) {
       marker.addEventListener('mouseenter', () => highlightConvergence(ev.year));
