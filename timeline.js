@@ -222,22 +222,60 @@ function buildWorldLayer() {
     marker.dataset.year = ev.year;
     if (ev._stackIdx) marker.dataset.stackIdx = ev._stackIdx;
 
+    const firstUrl = ev.reasoning?.find(r => r.url)?.url ?? '';
+
     const dot = document.createElement('div');
-    dot.className = 'event-dot' + (!ev.convergence && ev.url === '' ? ' event-dot--no-url' : '');
+    dot.className = 'event-dot' + (!ev.convergence && !firstUrl ? ' event-dot--no-url' : '');
     marker.appendChild(dot);
     eventDotEls.push(dot);
 
     const lbl = document.createElement('div');
     lbl.className = 'event-label';
-    lbl.innerHTML = ev.label.replace(/\n/g, '<br>');
+
+    const lblText = document.createElement('div');
+    lblText.className = 'event-label-text';
+    lblText.innerHTML = ev.label.replace(/\n/g, '<br>');
+    lblText.addEventListener('click', e => {
+      e.stopPropagation();
+      if (ev.convergence) showConvergenceTooltip(e, ev);
+      else {
+        showTooltip(e, ev.label, '');
+        if (firstUrl) window.open(firstUrl, '_blank', 'noopener');
+      }
+    });
+    lbl.appendChild(lblText);
+
+    const filledEntries = (ev.reasoning ?? []).filter(r => r.description);
+    if (filledEntries.length > 0) {
+      const desc = document.createElement('div');
+      desc.className = 'event-description';
+      desc.addEventListener('click', e => e.stopPropagation());
+      filledEntries.forEach(entry => {
+        if (entry.url) {
+          const a = document.createElement('a');
+          a.href = entry.url;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.textContent = entry.description;
+          a.addEventListener('click', e => e.stopPropagation());
+          desc.appendChild(a);
+        } else {
+          const p = document.createElement('p');
+          p.textContent = entry.description;
+          desc.appendChild(p);
+        }
+      });
+      lbl.appendChild(desc);
+    }
     marker.appendChild(lbl);
     eventLabelEls.push(lbl);
 
     marker.addEventListener('click', e => {
+      if (e.target.closest('.event-label')) return;
       if (ev.convergence) showConvergenceTooltip(e, ev);
       else {
         showTooltip(e, ev.label, '');
-        if (ev.url) window.open(ev.url, '_blank', 'noopener');
+        if (firstUrl) window.open(firstUrl, '_blank', 'noopener');
       }
     });
     if (ev.convergence) {

@@ -202,6 +202,46 @@ html, body {
   box-shadow: 0 0 18px rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.6);
 }
 
+.event-label-text {
+  pointer-events: auto;
+}
+
+.event-description {
+  display: none;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  white-space: normal;
+  max-width: 200px;
+  text-align: left;
+  line-height: 1.45;
+  pointer-events: auto;
+}
+.world-event:hover .event-description {
+  display: block;
+}
+.event-description a,
+.event-description p {
+  display: block;
+}
+.event-description a + a,
+.event-description a + p,
+.event-description p + a,
+.event-description p + p {
+  border-top: 1px solid rgba(255,255,255,0.12);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+.event-description a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.event-description a:hover {
+  text-decoration: underline;
+}
+
 /* Age / era boundary — gold */
 .world-event.age::before {
   background: linear-gradient(to bottom, transparent 35%, rgba(246,224,94,0.38) 100%);
@@ -252,6 +292,7 @@ html, body {
 }
 .world-event:hover .event-label {
   opacity: 1;
+  pointer-events: auto;
 }
 .world-event:hover {
   z-index: 200;
@@ -259,6 +300,7 @@ html, body {
 /* Always show labels when heroes are hidden (zoomed out) — age boundaries stay hover-only */
 #world-layer.world-labels-always .world-event:not(.world-event--collapsed):not(.age) .event-label {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Events inside a collapsed era — suppress label, dim diamond */
