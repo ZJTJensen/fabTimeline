@@ -47,7 +47,7 @@ const WORLD_EVENTS = [
   reasoning: [
     { description: 'Valahi was founded at the start of the war of the ancients', url: 'https://legendarystories.net/world-of-rathe/aria.html#valahai' }
   ] },
-  { year: -7.5,               label: 'The War of the Ancients begins', 
+  { year: -7,               label: 'The War of the Ancients begins', 
     reasoning: [
       { description: 'Aurora slid the symbols for 90 into place', url: 'https://legendarystories.net/main-story/rosetta/secret-of-the-aetherscribes.html' }
     ] },
