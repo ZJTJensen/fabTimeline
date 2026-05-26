@@ -210,6 +210,7 @@ function buildWorldLayer() {
     below.forEach((ev, i) => { ev._stackIdx = i; });
   });
 
+  const axisYearShown = new Set();
   WORLD_EVENTS.forEach(ev => {
     const inCollapsed = ERAS.some(
       era => collapsedEras.has(era.id) && ev.year >= era.start && ev.year < era.end
@@ -274,12 +275,14 @@ function buildWorldLayer() {
     marker.appendChild(lbl);
     eventLabelEls.push(lbl);
 
-    if (ev.type !== 'age' && !TICK_YEAR_SET.has(ev.year)) {
+    if (ev.type !== 'age' && !TICK_YEAR_SET.has(ev.year) && !axisYearShown.has(ev.year) && !inCollapsed) {
       const axisYr = document.createElement('div');
       axisYr.className = 'event-axis-year';
       axisYr.textContent = yearToAgeLabel(ev.year);
-      marker.appendChild(axisYr);
+      axisYr.style.left = yearToX(ev.year) + 'px';
+      worldLayer.appendChild(axisYr);
       eventAxisYearEls.push(axisYr);
+      axisYearShown.add(ev.year);
     }
 
     marker.addEventListener('click', e => {

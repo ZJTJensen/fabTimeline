@@ -207,8 +207,7 @@ html, body {
 }
 .event-axis-year {
   position: absolute;
-  top: calc(100% + 4px);  /* just below the axis for above-axis events */
-  left: 0;
+  top: calc(50% + 4px);
   font-size: 11px;
   color: var(--text);
   white-space: nowrap;
@@ -216,11 +215,7 @@ html, body {
   display: inline-block;
   pointer-events: none;
 }
-.world-event--below .event-axis-year {
-  top: 4px;  /* just below the axis for below-axis events */
-}
-#world-layer.world-events-hidden .event-axis-year,
-.world-event--collapsed .event-axis-year { display: none; }
+#world-layer.world-events-hidden .event-axis-year { display: none; }
 
 .event-description {
   display: none;
