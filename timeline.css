@@ -205,6 +205,22 @@ html, body {
 .event-label-text {
   pointer-events: auto;
 }
+.event-axis-year {
+  position: absolute;
+  top: calc(100% + 4px);  /* just below the axis for above-axis events */
+  left: 0;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  transform-origin: top center;
+  display: inline-block;
+  pointer-events: none;
+}
+.world-event--below .event-axis-year {
+  top: 4px;  /* just below the axis for below-axis events */
+}
+#world-layer.world-events-hidden .event-axis-year,
+.world-event--collapsed .event-axis-year { display: none; }
 
 .event-description {
   display: none;

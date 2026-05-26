@@ -81,6 +81,7 @@ let eraLabelEls      = [];
 let tickLabelEls     = [];
 let eventDotEls      = [];
 let eventLabelEls    = [];
+let eventAxisYearEls = [];
 let convergencePinEls = [];
 let setImgEls        = [];
 let heroDotData      = [];
@@ -94,11 +95,14 @@ const AXIS_PADDING          = 60;
 
 // ─── Tick marks ───────────────────────────────────────────────────────────────
 const TICK_YEARS = [
-  -750, -500, -400, -100, -50, 0,
-  50, 100, 150, 200, 220, 240, 248, 249,
+  -750, -501, -400, -101, -50, -1,
+  50, 100, 150, 200, 220, 240, 248,
   250, 250.3, 250.6, 251, 251.3, 251.6, 252, 252.3, 252.6,
   253, 253.3, 253.6, 254, 254.3, 254.6,
+  255, 256, 257, 258, 259, 260,
 ];
+const AGE_END_TICK_YEARS = new Set([-501, -101, -1, 250, 251, 252, 253, 254, 255]);
+const TICK_YEAR_SET = new Set(TICK_YEARS);
 let TICK_X = TICK_YEARS.map(yearToX);
 const TICK_MIN_SCREEN_PX = 50;
 
@@ -183,7 +187,7 @@ function buildWorldLayer() {
     const tick = document.createElement('div');
     tick.className = 'tick';
     tick.style.left = yearToX(yr) + 'px';
-    tick.dataset.minZoom = tickMinZoom(i);
+    tick.dataset.minZoom = AGE_END_TICK_YEARS.has(yr) ? 0 : tickMinZoom(i);
     const lbl = document.createElement('span');
     lbl.textContent = yearToAgeLabel(yr);
     tick.appendChild(lbl);
@@ -269,6 +273,14 @@ function buildWorldLayer() {
     }
     marker.appendChild(lbl);
     eventLabelEls.push(lbl);
+
+    if (ev.type !== 'age' && !TICK_YEAR_SET.has(ev.year)) {
+      const axisYr = document.createElement('div');
+      axisYr.className = 'event-axis-year';
+      axisYr.textContent = yearToAgeLabel(ev.year);
+      marker.appendChild(axisYr);
+      eventAxisYearEls.push(axisYr);
+    }
 
     marker.addEventListener('click', e => {
       if (e.target.closest('.event-label')) return;
@@ -749,6 +761,7 @@ function applyTransform() {
   eventLabelEls.forEach(el     => { el.style.transform = scaleX; });
   convergencePinEls.forEach(el => { el.style.transform = centeredPin; });
   setImgEls.forEach(el         => { el.style.transform = `translateX(${-45 * invZ}px) scaleX(${invZ})`; });
+  eventAxisYearEls.forEach(el  => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
 
   if (!tickEls) tickEls = Array.from(worldLayer.querySelectorAll('.tick'));
   tickEls.forEach(tick => {
@@ -961,6 +974,7 @@ function rebuildAll() {
   tickLabelEls     = [];
   eventDotEls      = [];
   eventLabelEls    = [];
+  eventAxisYearEls = [];
   convergencePinEls = [];
   setImgEls        = [];
 
