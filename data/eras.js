@@ -43,7 +43,7 @@ const WORLD_EVENTS = [
     reasoning: [
       { description: 'The Adamant takes their role', url: 'https://legendarystories.net/world-of-rathe/solana.html#grand-magisters' }
     ] },
-  { year:  -10,                label: 'Valahai is founded',
+  { year:  -7,                label: 'Valahai is founded',
   reasoning: [
     { description: 'Valahi was founded at the start of the war of the ancients', url: 'https://legendarystories.net/world-of-rathe/aria.html#valahai' }
   ] },
