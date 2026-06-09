@@ -123,7 +123,6 @@ const WORLD_EVENTS = [
   { year:  250.6,              label: 'Grand Everfest — Secrets of Aria\nHeroes gather across Aria', convergence: true },
   { year:  252,                label: 'Rathe unites against the Demonastery Invasion',              convergence: true },
   { year:  252.3,              label: 'Bright Lights — Metrix\nMultiple fates converge',            convergence: true },
-  { year:  252.6,              label: 'The Deathmatch Arena',                                       convergence: true },
   { year:  253.3,              label: 'The Queen of Candlehold, Calvera, dies\nCandlehold opens to Aria for the first time', convergence: true },
 ];
 

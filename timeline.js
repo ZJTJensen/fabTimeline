@@ -73,18 +73,22 @@ let worldEventsOverride = null;
 let ageBoundsOverride   = null;
 let setIconsOverride    = null;
 let prevZoom            = null;
+let showDates           = false;
+let showDeathmatch      = false;
+
+const DEATHMATCH_EXCEPTIONS = new Set(['kassai', 'kayo', 'rhinar']);
 
 let heroSVG = null;
 const heroLabelData = [];
 
-let eraLabelEls      = [];
-let tickLabelEls     = [];
-let eventDotEls      = [];
-let eventLabelEls    = [];
-let eventAxisYearEls = [];
+let eraLabelEls       = [];
+let tickLabelEls      = [];
+let eventDotEls       = [];
+let eventLabelEls     = [];
+let eventAxisYearEls  = [];
 let convergencePinEls = [];
-let setImgEls        = [];
-let heroDotData      = [];
+let setImgEls         = [];
+let heroDotData       = [];
 
 const SET_THRESHOLD         = 0.15;
 const HERO_THRESHOLD        = 0.5;
@@ -128,6 +132,7 @@ const btnWE          = document.getElementById('btn-show-world-events');
 const btnAB          = document.getElementById('btn-show-age-bounds');
 const btnH           = document.getElementById('btn-show-heroes');
 const btnSI          = document.getElementById('btn-show-set-icons');
+const btnDates       = document.getElementById('btn-show-dates');
 
 track.style.transformOrigin = '0 0';
 
@@ -345,7 +350,7 @@ function buildSetLayer() {
       img.alt = s.label;
       img.style.top = -(102 + i * 98) + 'px';
       img.addEventListener('error', () => { img.style.display = 'none'; });
-      img.addEventListener('click', ev => showTooltip(ev, s.label, yearToAgeLabel(s.year)));
+      img.addEventListener('click', ev => showTooltip(ev, s.label, showDates ? yearToAgeLabel(s.year) : ''));
       col.appendChild(img);
       setImgEls.push(img);
     });
@@ -358,6 +363,11 @@ function buildSetLayer() {
 function buildHeroFanLayer() {
   const dated = HEROES.filter(h => h.events.some(e => e.year !== null));
   const N = dated.length;
+
+  const maxTimelineYear = Math.max(
+    ...HEROES.flatMap(h => h.events.filter(e => e.year !== null).map(e => e.year)),
+    ...WORLD_EVENTS.filter(e => e.year !== null).map(e => e.year)
+  );
   const half = Math.floor(N / 2);
   const laneY = {};
   dated.forEach((hero, i) => {
@@ -382,6 +392,12 @@ function buildHeroFanLayer() {
     const evts = hero.events.filter(e => e.year !== null).sort((a, b) => a.year - b.year);
     if (evts.length === 0) return;
 
+    const _lastReal = evts[evts.length - 1];
+    if (!_lastReal.death && _lastReal.year < maxTimelineYear) {
+      const _offset = hero.id === 'ira' ? 10 : 0.3;
+      evts.push({ year: _lastReal.year + _offset, label: 'Whereabouts Unknown', unknown: true });
+    }
+
     const laneYVal = evtY(hero.id);
     const pts = evts.map(ev => ({
       x:    yearToX(ev.year),
@@ -390,11 +406,14 @@ function buildHeroFanLayer() {
       ev,
     }));
 
-    // Bezier path
-    if (pts.length >= 2) {
-      let d = `M${pts[0].x},${pts[0].y}`;
-      for (let i = 1; i < pts.length; i++) {
-        const a = pts[i - 1], b = pts[i];
+    // Bezier path — solid for real events, dashed for ?? extension
+    const hasUnknown = evts[evts.length - 1].unknown === true;
+    const solidPts   = hasUnknown ? pts.slice(0, -1) : pts;
+
+    if (solidPts.length >= 2) {
+      let d = `M${solidPts[0].x},${solidPts[0].y}`;
+      for (let i = 1; i < solidPts.length; i++) {
+        const a = solidPts[i - 1], b = solidPts[i];
         const cp = (b.x - a.x) / 3;
         d += ` C${a.x + cp},${a.y} ${b.x - cp},${b.y} ${b.x},${b.y}`;
       }
@@ -415,10 +434,30 @@ function buildHeroFanLayer() {
       hitPath.dataset.hero = hero.id;
       hitPath.addEventListener('click', e => {
         e.stopPropagation();
-        if (heroLayer.style.opacity === '0' || !visibleHeroes.has(hero.id)) return;
+        if (heroLayer.style.opacity === '0' || !isHeroVisible(hero.id)) return;
         jumpToNextEvent(hero);
       });
       heroSVG.appendChild(hitPath);
+    }
+
+    // Dashed ?? extension
+    if (hasUnknown) {
+      const a     = solidPts.length > 0 ? solidPts[solidPts.length - 1] : pts[0];
+      const b     = pts[pts.length - 1];
+      const fromY = a.y;
+      const cp    = (b.x - a.x) / 3;
+      const dashD = fromY === laneYVal
+        ? `M${a.x},${laneYVal} L${b.x},${laneYVal}`
+        : `M${a.x},${fromY} C${a.x + cp},${fromY} ${b.x - cp},${laneYVal} ${b.x},${laneYVal}`;
+      const dashPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      dashPath.setAttribute('d', dashD);
+      dashPath.setAttribute('fill', 'none');
+      dashPath.setAttribute('stroke', hero.color);
+      dashPath.setAttribute('stroke-width', '1.5');
+      dashPath.setAttribute('stroke-dasharray', '4 3');
+      dashPath.setAttribute('opacity', '0.5');
+      dashPath.dataset.hero = hero.id;
+      heroSVG.appendChild(dashPath);
     }
 
     // Vertical stub when first event is a convergence year
@@ -462,18 +501,19 @@ function buildHeroFanLayer() {
     const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
 
     visiblePts.forEach((pt, ptIdx) => {
-      const isFirst = ptIdx === 0 && uniquePositions > 1;
-      const isLast  = ptIdx === visiblePts.length - 1 && uniquePositions > 1 && !actualLastIsConvergence;
-      const isDeath = !!pt.ev.death;
+      const isUnknown = !!pt.ev.unknown;
+      const isDeath   = !!pt.ev.death;
+      const isFirst   = ptIdx === 0 && uniquePositions > 1 && !isUnknown;
+      const isLast    = ptIdx === visiblePts.length - 1 && uniquePositions > 1 && !actualLastIsConvergence && !isUnknown;
 
       const dot = document.createElement('div');
-      dot.className = 'hero-dot' + (isDeath ? ' hero-dot--death' : isFirst ? ' hero-dot--first' : isLast ? ' hero-dot--last' : '');
+      dot.className = 'hero-dot' + (isUnknown ? ' hero-dot--unknown' : isDeath ? ' hero-dot--death' : isFirst ? ' hero-dot--first' : isLast ? ' hero-dot--last' : '');
       dot.dataset.hero = hero.id;
       dot.style.left = pt.x + 'px';
       dot.style.top  = pt.dotY + 'px';
 
-      const sharesEndPos = uniquePositions > 1 && !isLast && !actualLastIsConvergence && pt.x === visiblePts[visiblePts.length - 1].x;
-      if (isDeath || isFirst || isLast) {
+      const sharesEndPos = !isUnknown && uniquePositions > 1 && !isLast && !actualLastIsConvergence && pt.x === visiblePts[visiblePts.length - 1].x;
+      if (isUnknown || isDeath || isFirst || isLast) {
         dot.style.color = hero.color;
       } else if (!sharesEndPos) {
         dot.style.background = hero.color;
@@ -482,14 +522,18 @@ function buildHeroFanLayer() {
 
       const evLbl = document.createElement('div');
       evLbl.className = 'hero-event-label';
-      evLbl.textContent = pt.ev.label;
+      evLbl.textContent = isUnknown ? `${hero.name} — Whereabouts Unknown` : pt.ev.label;
       evLbl.style.color = hero.color;
       dot.appendChild(evLbl);
 
       dot.addEventListener('click', e => {
         e.stopPropagation();
-        showTooltip(e, pt.ev.label, `${hero.name} · ${yearToAgeLabel(pt.ev.year)}`, hero.color);
-        if (pt.ev.url) window.open(pt.ev.url, '_blank', 'noopener');
+        if (isUnknown) {
+          showTooltip(e, hero.name, 'Whereabouts Unknown', hero.color);
+        } else {
+          showTooltip(e, pt.ev.label, showDates ? `${hero.name} · ${yearToAgeLabel(pt.ev.year)}` : hero.name, hero.color);
+          if (pt.ev.url) window.open(pt.ev.url, '_blank', 'noopener');
+        }
       });
       dot.addEventListener('mouseenter', () => highlightHero(hero.id));
       dot.addEventListener('mouseleave', clearHeroHighlight);
@@ -497,6 +541,7 @@ function buildHeroFanLayer() {
       heroDotsScreen.appendChild(dot);
       heroDotData.push({ el: dot, heroId: hero.id, trackX: pt.x, dotY: pt.dotY });
     });
+
   });
 }
 
@@ -555,12 +600,26 @@ function buildMenu() {
   });
 }
 
+
+function isHeroVisible(heroId) {
+  if (!visibleHeroes.has(heroId)) return false;
+  const hero = HEROES.find(h => h.id === heroId);
+  if (!showDeathmatch && hero?.deathmatch && !DEATHMATCH_EXCEPTIONS.has(heroId)) return false;
+  return true;
+}
+
 function applyHeroVisibility() {
   if (!heroSVG) return;
   heroSVG.querySelectorAll('[data-hero]').forEach(el => {
-    el.style.display = visibleHeroes.has(el.dataset.hero) ? '' : 'none';
+    el.style.display = isHeroVisible(el.dataset.hero) ? '' : 'none';
   });
   updateStickyLabels();
+}
+
+function applyDatesVisibility() {
+  tickLabelEls.forEach(el     => { el.style.display = showDates ? '' : 'none'; });
+  eventAxisYearEls.forEach(el => { el.style.display = showDates ? '' : 'none'; });
+  if (btnDates) btnDates.textContent = (showDates ? 'Hide' : 'Show') + ' Unofficial Dates';
 }
 
 // ─── Sticky hero name labels ──────────────────────────────────────────────────
@@ -571,7 +630,7 @@ function updateStickyLabels() {
   const visibleRightTrack = (vw - panX) / zoom;
 
   heroLabelData.forEach(({ el, heroId, firstX, lastX, baseX, dotY }) => {
-    if (!visibleHeroes.has(heroId)) return;
+    if (!isHeroVisible(heroId)) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
     const inView = firstX <= visibleRightTrack && lastX >= visibleLeftTrack;
     if (!inView) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
     if (el.style.display === 'none') el.style.display = '';
@@ -580,7 +639,7 @@ function updateStickyLabels() {
   });
 
   heroDotData.forEach(({ el, heroId, trackX, dotY }) => {
-    if (!visibleHeroes.has(heroId)) { el.style.display = 'none'; return; }
+    if (!isHeroVisible(heroId)) { el.style.display = 'none'; return; }
     const screenX = panX + trackX * zoom;
     if (screenX < -20 || screenX > vw + 20) {
       if (el.style.display !== 'none') el.style.display = 'none';
@@ -758,13 +817,13 @@ function applyTransform() {
   const scaleX      = `scaleX(${invZ})`;
   const centeredPin = `translate(-50%, -50%) scaleX(${invZ})`;
   track.style.setProperty('--inv-zoom', invZ);
-  eraLabelEls.forEach(el       => { el.style.transform = scaleX; });
-  tickLabelEls.forEach(el      => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
-  eventDotEls.forEach(el       => { el.style.transform = `scaleX(${invZ}) rotate(45deg)`; });
-  eventLabelEls.forEach(el     => { el.style.transform = scaleX; });
-  convergencePinEls.forEach(el => { el.style.transform = centeredPin; });
-  setImgEls.forEach(el         => { el.style.transform = `translateX(${-45 * invZ}px) scaleX(${invZ})`; });
-  eventAxisYearEls.forEach(el  => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
+  eraLabelEls.forEach(el          => { el.style.transform = scaleX; });
+  tickLabelEls.forEach(el         => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
+  eventDotEls.forEach(el          => { el.style.transform = `scaleX(${invZ}) rotate(45deg)`; });
+  eventLabelEls.forEach(el        => { el.style.transform = scaleX; });
+  convergencePinEls.forEach(el    => { el.style.transform = centeredPin; });
+  setImgEls.forEach(el            => { el.style.transform = `translateX(${-45 * invZ}px) scaleX(${invZ})`; });
+  eventAxisYearEls.forEach(el     => { el.style.transform = `scaleX(${invZ}) rotate(-40deg)`; });
 
   if (!tickEls) tickEls = Array.from(worldLayer.querySelectorAll('.tick'));
   tickEls.forEach(tick => {
@@ -886,12 +945,34 @@ document.getElementById('btn-jump-modern').addEventListener('click', () => {
   ['btn-show-set-icons',    () => { setIconsOverride    = setLayer.style.opacity === '0';                       }],
 ].forEach(([id, fn]) => document.getElementById(id).addEventListener('click', () => { fn(); applyTransform(); }));
 
+btnDates.addEventListener('click', () => { showDates = !showDates; applyDatesVisibility(); });
+
 document.getElementById('legend-toggle').addEventListener('click', () => {
   const legend = document.getElementById('legend');
   const btn    = document.getElementById('legend-toggle');
   legend.classList.toggle('minimized');
   btn.textContent = legend.classList.contains('minimized') ? '+' : '−';
 });
+
+document.getElementById('non-canon-toggle').addEventListener('click', () => {
+  const panel = document.getElementById('non-canon-panel');
+  const btn   = document.getElementById('non-canon-toggle');
+  panel.classList.toggle('minimized');
+  btn.textContent = panel.classList.contains('minimized') ? '+' : '−';
+});
+
+(function () {
+  const tag = document.querySelector('#non-canon-panel .non-canon-tag');
+
+  tag.addEventListener('click', () => {
+    showDeathmatch = !showDeathmatch;
+    tag.classList.toggle('active', showDeathmatch);
+    applyHeroVisibility();
+  });
+
+  tag.addEventListener('mouseenter', () => activateHighlight(id => (HEROES.find(h => h.id === id)?.deathmatch || DEATHMATCH_EXCEPTIONS.has(id)) && isHeroVisible(id)));
+  tag.addEventListener('mouseleave', clearHeroHighlight);
+}());
 
 // Legend drag
 (function () {
@@ -914,6 +995,35 @@ document.getElementById('legend-toggle').addEventListener('click', () => {
     if (!dragging) return;
     legend.style.left = Math.max(0, e.clientX - offX) + 'px';
     legend.style.top  = Math.max(0, e.clientY - offY) + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    header.style.cursor = '';
+  });
+}());
+
+// Non-canon panel drag
+(function () {
+  const panel  = document.getElementById('non-canon-panel');
+  const header = panel.querySelector('.non-canon-header');
+  let dragging = false, offX = 0, offY = 0;
+
+  header.addEventListener('mousedown', e => {
+    if (e.target.id === 'non-canon-toggle') return;
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = panel.getBoundingClientRect();
+    panel.style.cssText += `;bottom:auto;right:auto;top:${rect.top}px;left:${rect.left}px`;
+    offX = e.clientX - rect.left;
+    offY = e.clientY - rect.top;
+    dragging = true;
+    header.style.cursor = 'grabbing';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    panel.style.left = Math.max(0, e.clientX - offX) + 'px';
+    panel.style.top  = Math.max(0, e.clientY - offY) + 'px';
   });
   document.addEventListener('mouseup', () => {
     if (!dragging) return;
@@ -973,13 +1083,13 @@ function rebuildAll() {
   tickEls = null;
   heroLabelData.length = 0;
   heroDotData.length   = 0;
-  eraLabelEls      = [];
-  tickLabelEls     = [];
-  eventDotEls      = [];
-  eventLabelEls    = [];
-  eventAxisYearEls = [];
-  convergencePinEls = [];
-  setImgEls        = [];
+  eraLabelEls          = [];
+  tickLabelEls         = [];
+  eventDotEls          = [];
+  eventLabelEls        = [];
+  eventAxisYearEls     = [];
+  convergencePinEls    = [];
+  setImgEls            = [];
 
   TRACK_WIDTH       = computeTrackWidth();
   TICK_X            = TICK_YEARS.map(yearToX);
@@ -992,6 +1102,7 @@ function rebuildAll() {
   heroSVG.setAttribute('width', TRACK_WIDTH);
   zoom = Math.max((viewport.clientWidth - 80) / TRACK_WIDTH, zoom);
   panX = clampPan(panX, zoom);
+  applyDatesVisibility();
   applyTransform();
 }
 
@@ -1013,4 +1124,6 @@ buildWorldLayer();
 buildSetLayer();
 buildHeroFanLayer();
 buildMenu();
+applyDatesVisibility();
+applyHeroVisibility();
 resetView();

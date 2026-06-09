@@ -568,6 +568,38 @@ html, body {
 .hero-dot--first::before { content: '+'; }
 .hero-dot--last::before  { content: '−'; }
 
+/* Unknown future marker */
+.hero-dot--unknown {
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: 0;
+  height: 0;
+}
+.hero-dot--unknown::before {
+  content: '??';
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: currentColor;
+  opacity: 0.55;
+  text-shadow: 0 0 6px currentColor;
+  white-space: nowrap;
+}
+.hero-dot--unknown::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+}
+
 /* Death marker — same zero-size anchor pattern */
 .hero-dot--death {
   background: none;
@@ -1005,6 +1037,7 @@ a.tt-story-label:hover {
 @media (max-width: 600px) {
   #menu-panel { width: 85vw; }
   #legend { display: none; }
+  #non-canon-panel { display: none; }
 
   #ui {
     top: 8px;
@@ -1059,6 +1092,98 @@ a.tt-story-label:hover {
     top: calc(50% - 50px);
     height: 50px;
   }
+}
+
+/* ── Non-canon panel ────────────────────────────────────────────────────────── */
+#non-canon-panel {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(9, 9, 15, 0.85);
+  border: 1px dashed rgba(180, 130, 60, 0.45);
+  border-radius: 8px;
+  padding: 10px 14px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  max-width: 230px;
+  box-shadow: 0 0 18px rgba(180, 100, 40, 0.08), 0 4px 20px rgba(0,0,0,0.5);
+}
+.non-canon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  cursor: grab;
+}
+#non-canon-panel.minimized .non-canon-header {
+  margin-bottom: 0;
+}
+#non-canon-panel.minimized .non-canon-body {
+  display: none;
+}
+.non-canon-header h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(200, 150, 80, 0.85);
+}
+#non-canon-toggle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  min-width: 0;
+  cursor: pointer;
+}
+#non-canon-toggle:hover {
+  color: var(--text);
+  background: none;
+  border-color: transparent;
+}
+.non-canon-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.non-canon-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(200, 150, 80, 0.7);
+  border: 1px dashed rgba(200, 150, 80, 0.35);
+  border-radius: 3px;
+  padding: 2px 7px;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.non-canon-tag:hover {
+  color: rgba(220, 170, 100, 1);
+  border-color: rgba(220, 170, 100, 0.7);
+  box-shadow: 0 0 8px rgba(200, 140, 60, 0.3);
+}
+.non-canon-tag.active {
+  color: rgba(230, 180, 90, 1);
+  border-color: rgba(230, 180, 90, 0.85);
+  border-style: solid;
+  background: rgba(200, 140, 50, 0.15);
+  box-shadow: 0 0 12px rgba(200, 140, 50, 0.35);
+}
+.non-canon-body p {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
+}
+.non-canon-body p strong {
+  color: rgba(220, 170, 90, 0.9);
+  font-weight: 600;
 }
 
 /* ── Hero hover highlight ────────────────────────────────────────────────────── */

@@ -24,6 +24,7 @@ const HEROES = [
     color: '#6b7280',
     description: 'Once a experiment in the South Maw Asylum, now a member of the brood',
     events: [
+      { year: 251,   label: 'Slippy is created by Dr. Mortimer, shortly after Huntsman\'s escape' },
       { year: 253.6, label: 'Arakni is hunted across Rathe', url: 'https://legendarystories.net/main-story/the-hunted/children-of-chaos.html' },
     ],
   },
@@ -54,7 +55,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'betsy', name: 'Betsy, Skin in the Game', class: ['Guardian'], talent: ['None'], region: 'Deathmatch Arena',
+    id: 'betsy', name: 'Betsy, Skin in the Game', class: ['Guardian'], talent: ['None'], region: 'Deathmatch Arena', deathmatch: true,
     color: '#9b2335',
     description: 'A brawler with a thirst for gambling and a knack for winning, Betsy is a fan favorite in the Deathmatch Arena',
     events: [
@@ -237,6 +238,7 @@ const HEROES = [
     color: '#e09400',
     description: '',
     events: [
+      { year: 200,    label: 'Hala is born* — future commander and mentor of Dorinthea' },
       { year: 240,    label: 'Hala\'s ambush fails due to Dorinthea, and is mortaly wounded', url: 'https://legendarystories.net/main-story/welcome-to-rathe/pride-of-the-ironsongs.html' },
       { year: 254.45, label: 'Hala fights off the forces of Shadow', url: 'https://legendarystories.net/main-story/compendium-of-rathe/vow-unbroken.html' },
     ],
@@ -246,9 +248,9 @@ const HEROES = [
     color: '#d63ddb',
     description: '',
     events: [
-      { year: -14, label: 'Ira born in the Valley of Blossoms', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' },
-      { year:   0, label: 'Massacre of Ikaru clan — Crimson Haze Rebels founded', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' },
-      { year:  25, label: 'Ira and Xun reunite and fight off demons', url: 'https://legendarystories.net/main-story/rosetta/to-halt-the-dark.html' },
+      { year: -21, label: 'Ira born in the Valley of Blossoms', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' },
+      { year:  -7, label: 'Massacre of Ikaru clan — Crimson Haze Rebels founded', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' },
+      { year:  18, label: 'Ira and Xun reunite and fight off demons', url: 'https://legendarystories.net/main-story/rosetta/to-halt-the-dark.html' },
     ],
   },
   {
@@ -279,7 +281,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'kassai', name: 'Kassai', class: ['Warrior'], talent: ['None'], region: 'Volcor',
+    id: 'kassai', name: 'Kassai', class: ['Warrior'], talent: ['None'], region: 'Volcor', deathmatch: true,
     color: '#d97706',
     description: '',
     events: [
@@ -307,7 +309,6 @@ const HEROES = [
     description: '',
     events: [
       { year: 240,   label: 'Kayo hatches in the Savage Lands' },
-      { year: 252.6, label: 'Kayo enters the Arena', url: 'https://legendarystories.net/main-story/heavy-hitters/arena-announcements.html' },
     ],
   },
   {
@@ -334,7 +335,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'lyath', name: 'Lyath Goldmane, Vile Savant', class: ['Guardian'], talent: ['Reviled'], region: 'Northern Realms',
+    id: 'lyath', name: 'Lyath Goldmane, Vile Savant', class: ['Guardian'], talent: ['Reviled'], region: 'Northern Realms', deathmatch: true,
     color: '#713f12',
     description: '',
     events: [
@@ -387,7 +388,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'olympia', name: 'Olympia', class: ['Guardian'], talent: ['None'], region: 'Deathmatch Arena',
+    id: 'olympia', name: 'Olympia', class: ['Guardian'], talent: ['None'], region: 'Deathmatch Arena', deathmatch: true,
     color: '#d6d3d1',
     description: '',
     events: [
@@ -404,7 +405,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'pleiades', name: 'Pleiades, Superstar', class: ['Guardian'], talent: ['Revered'], region: 'Northern Realms',
+    id: 'pleiades', name: 'Pleiades, Superstar', class: ['Guardian'], talent: ['Revered'], region: 'Northern Realms', deathmatch: true,
     color: '#e879f9',
     description: '',
     events: [
@@ -436,8 +437,7 @@ const HEROES = [
     events: [
       { year: 220,   label: 'A cub, rhinar survives in the dence jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
       { year: 250,   label: 'Established alpha predator of the jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
-      { year: 252.6, label: 'Rhinar Enters the Deathmatch Arena', url: 'https://legendarystories.net/main-story/heavy-hitters/arena-announcements.html' },
-      { year: 254.8, label: 'Rhinar returns to the Savage Lands', url: 'https://legendarystories.net/short-stories/armory-decks/rhinar.html' },
+      { year: 253.8, label: 'Rhinar returns to the Savage Lands', url: 'https://legendarystories.net/short-stories/armory-decks/rhinar.html' },
     ],
   },
   {
@@ -480,7 +480,7 @@ const HEROES = [
     events: [],
   },
   {
-    id: 'tuffnut', name: 'Tuffnut, Bumbling Hulkster', class: ['Brute'], talent: ['Revered'], region: 'Deathmatch Arena',
+    id: 'tuffnut', name: 'Tuffnut, Bumbling Hulkster', class: ['Brute'], talent: ['Revered'], region: 'Deathmatch Arena', deathmatch: true,
     color: '#a16207',
     description: '',
     events: [
@@ -514,7 +514,7 @@ const HEROES = [
     ],
   },
   {
-    id: 'victor-goldmane', name: 'Victor Goldmane', class: ['Warrior'], talent: ['None'], region: 'Northern Realms',
+    id: 'victor-goldmane', name: 'Victor Goldmane', class: ['Warrior'], talent: ['None'], region: 'Northern Realms', deathmatch: true,
     color: '#ca8a04',
     description: '',
     events: [
