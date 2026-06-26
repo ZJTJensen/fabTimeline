@@ -638,6 +638,7 @@ function applyHeroVisibility() {
 function applyDatesVisibility() {
   tickLabelEls.forEach(el     => { el.style.display = showDates ? '' : 'none'; });
   eventAxisYearEls.forEach(el => { el.style.display = showDates ? '' : 'none'; });
+  worldLayer.classList.toggle('dates-hidden', !showDates);
   if (btnDates) btnDates.textContent = (showDates ? 'Hide' : 'Show') + ' Unofficial Dates';
 }
 

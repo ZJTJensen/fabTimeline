@@ -108,6 +108,7 @@ html, body {
 }
 
 /* ── Tick marks ────────────────────────────────────────────────────────────── */
+#world-layer.dates-hidden .tick::before { display: none; }
 .tick {
   position: absolute;
   top: 50%;
