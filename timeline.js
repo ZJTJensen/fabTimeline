@@ -31,6 +31,24 @@ function yearToX(year) {
   return x;
 }
 
+function xToYear(x) {
+  let remaining = x - TRACK_OFFSET;
+  for (const era of ERAS) {
+    if (collapsedEras.has(era.id)) {
+      if (remaining <= COLLAPSED_PX) return era.start + (era.end - era.start) * (remaining / COLLAPSED_PX);
+      remaining -= COLLAPSED_PX;
+      continue;
+    }
+    for (const seg of SEGMENTS.filter(s => s.eraId === era.id)) {
+      const segW = (seg.end - seg.start) * seg.pxPerYr;
+      if (remaining <= segW) return seg.start + remaining / seg.pxPerYr;
+      remaining -= segW;
+    }
+  }
+  const last = SEGMENTS[SEGMENTS.length - 1];
+  return last.end + remaining / last.pxPerYr;
+}
+
 function yearToAgeLabel(year) {
   const ages = [
     { start: -750, ageNum: 1 },
@@ -128,6 +146,7 @@ const menuOverlay    = document.getElementById('menu-overlay');
 const hamburgerBtn   = document.getElementById('hamburger-btn');
 const zoomDisplay    = document.getElementById('zoom-display');
 const tooltip        = document.getElementById('tooltip');
+const yearHover      = document.getElementById('year-hover');
 const btnWE          = document.getElementById('btn-show-world-events');
 const btnAB          = document.getElementById('btn-show-age-bounds');
 const btnH           = document.getElementById('btn-show-heroes');
@@ -395,7 +414,7 @@ function buildHeroFanLayer() {
     const _lastReal = evts[evts.length - 1];
     if (!_lastReal.death && _lastReal.year < maxTimelineYear) {
       const _offset = hero.id === 'ira' ? 10 : 0.3;
-      evts.push({ year: _lastReal.year + _offset, label: 'Whereabouts Unknown', unknown: true });
+      evts.push({ year: _lastReal.year + _offset, label: 'Whereabouts Unknown', unknown: true, noConvergence: true });
     }
 
     const laneYVal = evtY(hero.id);
@@ -496,7 +515,7 @@ function buildHeroFanLayer() {
     heroLabelData.push({ el: nameLbl, heroId: hero.id, firstX: pts[0].x, lastX: pts[pts.length - 1].x, baseX: pts[0].x + 8, dotY: pts[0].dotY });
 
     // Event dots (skip convergence-year events — path dip is the visual)
-    const visiblePts = pts.filter(pt => !convergenceYears.has(pt.ev.year));
+    const visiblePts = pts.filter(pt => pt.ev.unknown || !convergenceYears.has(pt.ev.year));
     const uniquePositions = new Set(visiblePts.map(p => p.x)).size;
     const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
 
@@ -913,6 +932,16 @@ window.addEventListener('mouseup', () => {
   isDragging = false;
   viewport.style.cursor = '';
 });
+
+viewport.addEventListener('mousemove', e => {
+  const vpLeft = viewport.getBoundingClientRect().left;
+  const trackX = (e.clientX - vpLeft - panX) / zoom;
+  yearHover.textContent = yearToAgeLabel(Math.round(xToYear(trackX)));
+  yearHover.style.left = e.clientX + 'px';
+  yearHover.style.top  = e.clientY + 'px';
+  yearHover.style.display = 'block';
+});
+viewport.addEventListener('mouseleave', () => { yearHover.style.display = 'none'; });
 
 let lastTouches = null;
 viewport.addEventListener('touchstart', e => { lastTouches = e.touches; }, { passive: true });

@@ -941,6 +941,22 @@ button.active:hover {
 }
 
 /* ── Tooltip ─────────────────────────────────────────────────────────────────── */
+#year-hover {
+  position: fixed;
+  display: none;
+  background: rgba(10, 10, 22, 0.82);
+  border: 1px solid rgba(160, 160, 200, 0.25);
+  color: #a0a0c8;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  padding: 2px 7px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 900;
+  white-space: nowrap;
+  transform: translate(14px, -50%);
+}
+
 #tooltip {
   position: fixed;
   display: none;
