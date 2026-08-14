@@ -23,7 +23,7 @@ const WORLD_EVENTS = [
   { year: -700,                label: 'Volcor is founded†',
     reasoning: [
       { description: 'The volcanic empire of Volcor is established. Estimated date.', url: 'https://legendarystories.net/world-of-rathe/volcor.html' },
-      { description: 'Source', url: 'https://preview.redd.it/my-source-is-that-i-made-it-the-fuck-up-hd-template-v0-axvetg04b1z81.jpg?width=1080&crop=smart&auto=webp&s=a362967c672c31db7ef777a292de5ce635ac005a' }
+      { description: 'Source', url: 'https://www.youtube.com/watch?v=uKeKuaJ4nlw' }
     ] },
   { year: -500,   type: 'age', label: 'First Age Ends*\nSecond Age Begins*' },
   { year: -400,                label: 'Ikaru founded',
