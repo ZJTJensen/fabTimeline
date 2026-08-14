@@ -400,6 +400,7 @@ const HEROES = [
     color: '#4f46e5',
     description: '',
     events: [
+      { year:   0,   label: 'Oscilio is created', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/fall-of-valahai.html' },
       { year: 253.3, label: 'Oscilio is discovered by Aurora', url: 'https://legendarystories.net/main-story/rosetta/secret-of-the-aetherscribes.html' },
       { year: 254.6, label: 'Aurora and Oscilio fight against the Omens', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/omens-in-the-sky.html' },
     ],
@@ -560,6 +561,7 @@ const HEROES = [
     color: '#635fb8',
     description: '',
     events: [
+      { year:   0,   label: 'Zyggy, fights off the old ones', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/fall-of-valahai.html' },
       { year: 254.6, label: 'Aurora and Oscilio find Zyggy in the Auric keep', url: 'https://legendarystories.net/main-story/omens-of-the-third-age/omens-in-the-sky.html' },
     ],
   },

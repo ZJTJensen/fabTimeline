@@ -1,9 +1,3 @@
-// Scale:
-//   era-1  -750→-500  (250 yrs)  3 px/yr
-//   era-2  -500→-100  (400 yrs)  3 px/yr
-//   era-3  -100→   0  (100 yrs)  8 px/yr
-//   era-4     0→ 250  (250 yrs) 20 px/yr
-//   era-5   250→ 260  ( 10 yrs) 600 px/yr
 const TRACK_OFFSET = 100;
 const COLLAPSED_PX = 60;
 const collapsedEras = new Set();
@@ -78,7 +72,6 @@ function computeTrackWidth() {
 
 let TRACK_WIDTH = computeTrackWidth();
 
-// ─── State ────────────────────────────────────────────────────────────────────
 let zoom = 1;
 let panX = 0;
 let isDragging = false;
@@ -115,7 +108,6 @@ const MAX_ZOOM              = 2.9;
 const LANE_SPACING          = 18;
 const AXIS_PADDING          = 60;
 
-// ─── Tick marks ───────────────────────────────────────────────────────────────
 const TICK_YEARS = [
   -750, -501, -400, -101, -50, -1,
   50, 100, 150, 200, 220, 240, 248,
@@ -134,7 +126,6 @@ function tickMinZoom(i) {
   return TICK_MIN_SCREEN_PX / Math.max(left, right);
 }
 
-// ─── DOM refs ─────────────────────────────────────────────────────────────────
 const viewport       = document.getElementById('viewport');
 const track          = document.getElementById('track');
 const worldLayer     = document.getElementById('world-layer');
@@ -155,7 +146,6 @@ const btnDates       = document.getElementById('btn-show-dates');
 
 track.style.transformOrigin = '0 0';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function appendTTSection(parent, hdrText, nmsText) {
   const sec = document.createElement('div');
   sec.className = 'tt-section';
@@ -178,7 +168,6 @@ function activateHighlight(matchFn) {
   });
 }
 
-// ─── Build world layer ────────────────────────────────────────────────────────
 function buildWorldLayer() {
   const axis = document.createElement('div');
   axis.className = 'axis-line';
@@ -219,12 +208,10 @@ function buildWorldLayer() {
     worldLayer.appendChild(tick);
   });
 
-  // Auto-alternate non-age world events above/below axis
   const nonAge = WORLD_EVENTS.filter(ev => ev.type !== 'age').sort((a, b) => a.year - b.year);
   nonAge.forEach((ev, i) => { ev._autoBelow = i % 2 !== 0; });
   WORLD_EVENTS.filter(ev => ev.convergence).forEach(ev => { ev._autoBelow = false; });
 
-  // Assign stack indices for same-year events
   const groups = WORLD_EVENTS.reduce((m, ev) => (m.set(ev.year, [...(m.get(ev.year) ?? []), ev]), m), new Map());
   groups.forEach(group => {
     const above = group.filter(ev => !ev._autoBelow);
@@ -334,7 +321,6 @@ function buildWorldLayer() {
     worldLayer.appendChild(marker);
   });
 
-  // Permanent convergence pins
   WORLD_EVENTS.filter(ev => ev.convergence).forEach(ev => {
     const pin = document.createElement('div');
     pin.className = 'convergence-pin';
@@ -349,7 +335,6 @@ function buildWorldLayer() {
   });
 }
 
-// ─── Build set layer ──────────────────────────────────────────────────────────
 function buildSetLayer() {
   const grouped = SETS.reduce((m, s) => {
     const key = s.year.toFixed(2);
@@ -378,7 +363,6 @@ function buildSetLayer() {
   });
 }
 
-// ─── Build hero fan layer ─────────────────────────────────────────────────────
 function buildHeroFanLayer() {
   const dated = HEROES.filter(h => h.events.some(e => e.year !== null));
   const N = dated.length;
@@ -425,7 +409,6 @@ function buildHeroFanLayer() {
       ev,
     }));
 
-    // Bezier path — solid for real events, dashed for ?? extension
     const hasUnknown = evts[evts.length - 1].unknown === true;
     const solidPts   = hasUnknown ? pts.slice(0, -1) : pts;
 
@@ -443,7 +426,6 @@ function buildHeroFanLayer() {
       path.dataset.hero = hero.id;
       heroSVG.appendChild(path);
 
-      // Wide invisible hit target
       const hitPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       hitPath.setAttribute('d', d);
       hitPath.setAttribute('fill', 'none');
@@ -459,7 +441,6 @@ function buildHeroFanLayer() {
       heroSVG.appendChild(hitPath);
     }
 
-    // Dashed ?? extension
     if (hasUnknown) {
       const a     = solidPts.length > 0 ? solidPts[solidPts.length - 1] : pts[0];
       const b     = pts[pts.length - 1];
@@ -479,7 +460,6 @@ function buildHeroFanLayer() {
       heroSVG.appendChild(dashPath);
     }
 
-    // Vertical stub when first event is a convergence year
     if (convergenceYears.has(pts[0].ev.year) && !pts[0].ev.noConvergence) {
       const stub = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       stub.setAttribute('x1', pts[0].x); stub.setAttribute('y1', laneYVal);
@@ -491,7 +471,6 @@ function buildHeroFanLayer() {
       heroSVG.appendChild(stub);
     }
 
-    // Name label sticky to first event
     const nameLbl = document.createElement('div');
     nameLbl.className = 'hero-start-label';
     nameLbl.dataset.hero = hero.id;
@@ -514,7 +493,6 @@ function buildHeroFanLayer() {
     heroNamesLayer.appendChild(nameLbl);
     heroLabelData.push({ el: nameLbl, heroId: hero.id, firstX: pts[0].x, lastX: pts[pts.length - 1].x, baseX: pts[0].x + 8, dotY: pts[0].dotY });
 
-    // Event dots (skip convergence-year events — path dip is the visual)
     const visiblePts = pts.filter(pt => pt.ev.unknown || !convergenceYears.has(pt.ev.year));
     const uniquePositions = new Set(visiblePts.map(p => p.x)).size;
     const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
@@ -564,7 +542,6 @@ function buildHeroFanLayer() {
   });
 }
 
-// ─── Build hero menu ──────────────────────────────────────────────────────────
 function buildMenu() {
   const list = document.getElementById('hero-list');
 
@@ -642,7 +619,6 @@ function applyDatesVisibility() {
   if (btnDates) btnDates.textContent = (showDates ? 'Hide' : 'Show') + ' Unofficial Dates';
 }
 
-// ─── Sticky hero name labels ──────────────────────────────────────────────────
 function updateStickyLabels() {
   const vw = viewport.clientWidth;
   const vh = viewport.clientHeight;
@@ -671,7 +647,6 @@ function updateStickyLabels() {
   });
 }
 
-// ─── Tooltip ──────────────────────────────────────────────────────────────────
 function showTooltip(e, title, sub, color = '#ffffff') {
   tooltip.querySelector('.tt-title').textContent = title;
   tooltip.querySelector('.tt-title').style.color = color;
@@ -753,7 +728,6 @@ document.addEventListener('click', () => {
   if (activeTooltip) { activeTooltip.style.display = 'none'; activeTooltip = null; }
 });
 
-// ─── Hero highlight ───────────────────────────────────────────────────────────
 function clearHeroHighlight() {
   if (!heroSVG) return;
   [heroSVG, heroDotsScreen, heroNamesLayer].forEach(l => {
@@ -782,7 +756,6 @@ function highlightConvergence(year) {
   activateHighlight(id => heroIds.has(id));
 }
 
-// ─── Render / transform ───────────────────────────────────────────────────────
 let tickEls = null;
 
 function applyTransform() {
@@ -865,7 +838,6 @@ function applyPanOnly() {
   updateStickyLabels();
 }
 
-// ─── Animated pan ─────────────────────────────────────────────────────────────
 let panAnimId = null;
 
 function animatePanTo(targetPanX, duration = 500) {
@@ -889,7 +861,6 @@ function jumpToNextEvent(hero) {
   animatePanTo(clampPan(viewport.clientWidth / 2 - yearToX(target.year) * zoom, zoom));
 }
 
-// ─── Zoom / pan ───────────────────────────────────────────────────────────────
 function zoomAt(clientX, factor) {
   const vpLeft  = viewport.getBoundingClientRect().left;
   const xInTrack = (clientX - vpLeft - panX) / zoom;
@@ -911,7 +882,6 @@ function resetView() {
   applyTransform();
 }
 
-// ─── Event listeners ──────────────────────────────────────────────────────────
 viewport.addEventListener('wheel', e => {
   e.preventDefault();
   zoomAt(e.clientX, e.deltaY < 0 ? 1.12 : 1 / 1.12);
@@ -1004,7 +974,6 @@ document.getElementById('non-canon-toggle').addEventListener('click', () => {
   tag.addEventListener('mouseleave', clearHeroHighlight);
 }());
 
-// Legend drag
 (function () {
   const legend = document.getElementById('legend');
   const header = legend.querySelector('.legend-header');
@@ -1033,7 +1002,6 @@ document.getElementById('non-canon-toggle').addEventListener('click', () => {
   });
 }());
 
-// Non-canon panel drag
 (function () {
   const panel  = document.getElementById('non-canon-panel');
   const header = panel.querySelector('.non-canon-header');
@@ -1070,7 +1038,6 @@ menuOverlay.addEventListener('click', e => {
   if (e.target === menuOverlay) menuOverlay.classList.remove('open');
 });
 
-// Keyboard
 const arrowKeys = { ArrowLeft: false, ArrowRight: false };
 let arrowRafId = null;
 const ARROW_PAN_SPEED = 10;
@@ -1102,7 +1069,6 @@ document.addEventListener('keyup', e => {
   if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') arrowKeys[e.key] = false;
 });
 
-// ─── Rebuild all layers (era collapse/expand) ─────────────────────────────────
 function rebuildAll() {
   clearHeroHighlight();
   worldLayer.innerHTML     = '';
@@ -1136,7 +1102,620 @@ function rebuildAll() {
   applyTransform();
 }
 
-// ─── Resize ───────────────────────────────────────────────────────────────────
+const EXPORT_AXIS        = '#ffffff';
+const EXPORT_TEXT        = '#e8e8f0';
+const EXPORT_DIM         = '#8a8aa8';
+const EXPORT_ERA_BORDER  = '#33334f';
+const EXPORT_AGE         = '#f6e05e';
+const EXPORT_CONV        = '#ffffff';
+const EXPORT_EVENT       = '#d7d7f0';
+const EXPORT_LABEL_BG    = 'rgba(14,14,26,0.93)';
+const EXPORT_FONT_FAMILY = "'Segoe UI', system-ui, sans-serif";
+const EXPORT_LINE_H      = 15;
+const EXPORT_SUB_LINE_H  = 13;
+const EXPORT_PAD_X       = 10;
+const EXPORT_PAD_Y       = 7;
+const EXPORT_DOT_GAP     = 10;
+const EXPORT_INNER_GAP   = 16;
+const EXPORT_LANE_GAP    = 14;
+const EXPORT_TOP_PAD     = 40;
+const EXPORT_BOTTOM_PAD  = 40;
+const EXPORT_SIDE_PAD    = 50;
+
+const exportMeasureCanvas = document.createElement('canvas');
+const exportMeasureCtx    = exportMeasureCanvas.getContext('2d');
+function measureTextWidth(text, font) {
+  exportMeasureCtx.font = font;
+  return exportMeasureCtx.measureText(text).width;
+}
+
+function escapeXML(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
+}
+
+function wrapSVG(content, width, height) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${content}</svg>`;
+}
+
+function buildWorldExportLayout() {
+  const totalTrackWidth = computeTrackWidth();
+
+  const items = WORLD_EVENTS.map(ev => {
+    const lines = ev.label.split('\n').map(l => l.trim()).filter(Boolean);
+    const subLine = yearToAgeLabel(ev.year);
+    const mainWidth = Math.max(...lines.map(l => measureTextWidth(l, `600 12px ${EXPORT_FONT_FAMILY}`)));
+    const subWidth  = measureTextWidth(subLine, `400 10px 'Courier New', monospace`);
+    const w = Math.max(mainWidth, subWidth) + EXPORT_PAD_X * 2;
+    const h = lines.length * EXPORT_LINE_H + EXPORT_SUB_LINE_H + EXPORT_PAD_Y * 2 + 4;
+    const isAge  = ev.type === 'age';
+    const isConv = !!ev.convergence;
+    const below  = !isAge && !isConv && !!ev._autoBelow;
+    return { ev, lines, subLine, x: yearToX(ev.year), w, h, isAge, isConv, below };
+  });
+
+  function packLanes(list) {
+    list.sort((a, b) => a.x - b.x);
+    const laneRight = [];
+    list.forEach(it => {
+      const half = it.w / 2;
+      let lane = laneRight.findIndex(r => (it.x - half) >= r);
+      if (lane === -1) { lane = laneRight.length; laneRight.push(-Infinity); }
+      laneRight[lane] = it.x + half + 8;
+      it.lane = lane;
+    });
+    return Math.max(1, laneRight.length);
+  }
+
+  const aboveLanes = packLanes(items.filter(it => !it.below));
+  const belowLanes = packLanes(items.filter(it => it.below));
+
+  const maxH = Math.max(...items.map(it => it.h));
+  const laneHeight = maxH + EXPORT_INNER_GAP + EXPORT_DOT_GAP + EXPORT_LANE_GAP;
+
+  return { items, totalTrackWidth, aboveLanes, belowLanes, laneHeight };
+}
+
+function buildHeroExportLayout() {
+  const dated = HEROES.filter(h => h.events.some(e => e.year !== null));
+  const N = dated.length;
+  const half = Math.floor(N / 2);
+  const laneY = {};
+  dated.forEach((hero, i) => {
+    laneY[hero.id] = i < half
+      ? -(half - i) * LANE_SPACING - AXIS_PADDING
+      :  (i - half + 1) * LANE_SPACING + AXIS_PADDING;
+  });
+
+  const maxTimelineYear = Math.max(
+    ...HEROES.flatMap(h => h.events.filter(e => e.year !== null).map(e => e.year)),
+    ...WORLD_EVENTS.filter(e => e.year !== null).map(e => e.year)
+  );
+  const convergenceYears = new Set(WORLD_EVENTS.filter(w => w.convergence).map(w => w.year));
+
+  const heroPaths = {};
+  const items = [];
+
+  dated.forEach(hero => {
+    const evts = hero.events.filter(e => e.year !== null).sort((a, b) => a.year - b.year);
+    if (evts.length === 0) return;
+
+    const _lastReal = evts[evts.length - 1];
+    if (!_lastReal.death && _lastReal.year < maxTimelineYear) {
+      const _offset = hero.id === 'ira' ? 10 : 0.3;
+      evts.push({ year: _lastReal.year + _offset, label: 'Whereabouts Unknown', unknown: true, noConvergence: true });
+    }
+
+    const laneYVal = laneY[hero.id] ?? 0;
+    const pts = evts.map(ev => ({
+      x: yearToX(ev.year),
+      yLocal: convergenceYears.has(ev.year) && !ev.noConvergence ? 0 : laneYVal,
+      ev,
+    }));
+    const hasUnknown = evts[evts.length - 1].unknown === true;
+    const solidPts   = hasUnknown ? pts.slice(0, -1) : pts;
+    heroPaths[hero.id] = { pts, hasUnknown, solidPts, laneYVal };
+
+    const visiblePts = pts.filter(pt => pt.ev.unknown || !convergenceYears.has(pt.ev.year));
+    const uniquePositions = new Set(visiblePts.map(p => p.x)).size;
+    const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
+    const below = laneYVal > 0;
+
+    visiblePts.forEach((pt, idx) => {
+      const isUnknown = !!pt.ev.unknown;
+      if (isUnknown) return;
+
+      const isDeath = !!pt.ev.death;
+      const isFirst = idx === 0 && uniquePositions > 1;
+      const isLast  = idx === visiblePts.length - 1 && uniquePositions > 1 && !actualLastIsConvergence;
+      const text = pt.ev.label;
+
+      const textW = measureTextWidth(text, `500 11px ${EXPORT_FONT_FAMILY}`);
+      let w = textW + EXPORT_PAD_X * 2;
+      let h = EXPORT_LINE_H + EXPORT_PAD_Y * 2;
+      if (isFirst) {
+        const nameW = measureTextWidth(hero.name, `700 12px ${EXPORT_FONT_FAMILY}`);
+        w = Math.max(w, nameW + EXPORT_PAD_X * 2);
+        h += EXPORT_LINE_H + 2;
+      }
+
+      items.push({
+        hero, x: pt.x, w, h, below,
+        naturalDist: Math.abs(laneYVal),
+        isFirst, isLast, isDeath, isUnknown, text,
+      });
+    });
+  });
+
+  function packHeroLanes(list) {
+    const maxH = Math.max(20, ...list.map(it => it.h));
+    const stepHeight = maxH + EXPORT_DOT_GAP + EXPORT_LANE_GAP;
+    const baseDist = EXPORT_INNER_GAP;
+    list.forEach(it => { it.naturalLane = Math.max(0, Math.round((it.naturalDist - baseDist) / stepHeight)); });
+    list.sort((a, b) => a.x - b.x);
+    const laneRight = [];
+    list.forEach(it => {
+      const half = it.w / 2;
+      let lane = it.naturalLane;
+      while ((laneRight[lane] ?? -Infinity) > it.x - half) lane++;
+      laneRight[lane] = it.x + half + 8;
+      it.lane = lane;
+      it.dist = baseDist + lane * stepHeight;
+    });
+    return laneRight.length ? baseDist + laneRight.length * stepHeight : 0;
+  }
+
+  const aboveExtent = packHeroLanes(items.filter(it => !it.below));
+  const belowExtent = packHeroLanes(items.filter(it => it.below));
+
+  return { dated, laneY, heroPaths, items, aboveExtent, belowExtent };
+}
+
+function computeSharedExportFrame(worldLayout, heroLayout) {
+  const worldAboveExtent = worldLayout.aboveLanes * worldLayout.laneHeight;
+  const worldBelowExtent = worldLayout.belowLanes * worldLayout.laneHeight;
+
+  const aboveExtent = Math.max(worldAboveExtent, heroLayout.aboveExtent);
+  const belowExtent = Math.max(worldBelowExtent, heroLayout.belowExtent);
+
+  const axisY       = EXPORT_TOP_PAD + aboveExtent;
+  const totalHeight = axisY + belowExtent + EXPORT_BOTTOM_PAD;
+  const totalWidth  = worldLayout.totalTrackWidth + EXPORT_SIDE_PAD * 2;
+
+  return { axisY, totalWidth, totalHeight, SIDE_PAD: EXPORT_SIDE_PAD };
+}
+
+function renderWorldItemSVG(it, laneHeight, frame) {
+  const { axisY, SIDE_PAD } = frame;
+  const x = it.x + SIDE_PAD;
+  const dir = it.below ? 1 : -1;
+  const dSize = it.isConv ? 15 : it.isAge ? 13 : 9;
+  let dotY, labelCenterY, connY2;
+
+  if (it.isAge || it.isConv) {
+    dotY = axisY;
+    const labelDist = EXPORT_INNER_GAP + it.lane * laneHeight + it.h / 2;
+    labelCenterY = axisY + dir * labelDist;
+    connY2 = labelCenterY + dir * (it.h / 2);
+  } else {
+    const bandInner = EXPORT_INNER_GAP + it.lane * laneHeight;
+    dotY = axisY + dir * bandInner;
+    labelCenterY = axisY + dir * (bandInner + EXPORT_DOT_GAP + it.h / 2);
+    connY2 = dotY;
+  }
+
+  let s = `<line x1="${x}" y1="${axisY}" x2="${x}" y2="${connY2}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+
+  if (it.isAge) {
+    s += `<rect x="${x - dSize / 2}" y="${dotY - dSize / 2}" width="${dSize}" height="${dSize}" fill="${EXPORT_AGE}" transform="rotate(45 ${x} ${dotY})"/>`;
+  } else if (it.isConv) {
+    s += `<circle cx="${x}" cy="${dotY}" r="${dSize / 2}" fill="${EXPORT_CONV}" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>`;
+  } else {
+    s += `<circle cx="${x}" cy="${dotY}" r="${dSize / 2}" fill="${EXPORT_EVENT}"/>`;
+  }
+
+  const boxColor = it.isAge ? EXPORT_AGE : it.isConv ? EXPORT_CONV : EXPORT_TEXT;
+  const boxX = x - it.w / 2, boxY = labelCenterY - it.h / 2;
+  s += `<rect x="${boxX}" y="${boxY}" width="${it.w}" height="${it.h}" rx="6" fill="${EXPORT_LABEL_BG}" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>`;
+  s += `<rect x="${boxX}" y="${boxY}" width="${it.w}" height="2" rx="1" fill="${boxColor}" opacity="0.55"/>`;
+
+  const ty = boxY + EXPORT_PAD_Y + EXPORT_LINE_H * 0.75;
+  s += `<text x="${x}" y="${ty}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="12" font-weight="600" fill="${boxColor}">`;
+  it.lines.forEach((line, i) => {
+    s += `<tspan x="${x}"${i === 0 ? '' : ` dy="${EXPORT_LINE_H}"`}>${escapeXML(line)}</tspan>`;
+  });
+  s += `</text>`;
+
+  const subY = boxY + it.h - EXPORT_PAD_Y - 2;
+  s += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" fill="${EXPORT_DIM}">${escapeXML(it.subLine)}</text>`;
+  return s;
+}
+
+function renderWorldEventsSVG(worldLayout, frame) {
+  const content = worldLayout.items
+    .filter(it => !it.isAge)
+    .map(it => renderWorldItemSVG(it, worldLayout.laneHeight, frame))
+    .join('');
+  return wrapSVG(content, frame.totalWidth, frame.totalHeight);
+}
+
+function renderAgeBoundariesSVG(worldLayout, frame) {
+  const content = worldLayout.items
+    .filter(it => it.isAge)
+    .map(it => renderWorldItemSVG(it, worldLayout.laneHeight, frame))
+    .join('');
+  return wrapSVG(content, frame.totalWidth, frame.totalHeight);
+}
+
+function renderTimelineOnlySVG(frame) {
+  const { axisY, totalWidth, totalHeight, SIDE_PAD } = frame;
+  let content = '';
+  ERAS.forEach(era => {
+    const x1 = yearToX(era.start) + SIDE_PAD;
+    const x2 = yearToX(era.end)   + SIDE_PAD;
+    content += `<line x1="${x1}" y1="14" x2="${x1}" y2="${totalHeight - 14}" stroke="${EXPORT_ERA_BORDER}" stroke-width="1"/>`;
+    content += `<text x="${(x1 + x2) / 2}" y="20" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="11" letter-spacing="1.5" fill="${EXPORT_DIM}">${escapeXML(era.label.toUpperCase())}</text>`;
+  });
+  const xEnd = yearToX(ERAS[ERAS.length - 1].end) + SIDE_PAD;
+  content += `<line x1="${xEnd}" y1="14" x2="${xEnd}" y2="${totalHeight - 14}" stroke="${EXPORT_ERA_BORDER}" stroke-width="1"/>`;
+  content += `<line x1="0" y1="${axisY}" x2="${totalWidth}" y2="${axisY}" stroke="${EXPORT_AXIS}" stroke-width="2"/>`;
+  return wrapSVG(content, totalWidth, totalHeight);
+}
+
+function renderDatesSVG(frame) {
+  const { axisY, SIDE_PAD } = frame;
+  const content = TICK_YEARS.map(yr => {
+    const x = yearToX(yr) + SIDE_PAD;
+    const label = yearToAgeLabel(yr);
+    const labelY = axisY + 24;
+    return `<line x1="${x}" y1="${axisY}" x2="${x}" y2="${axisY + 10}" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>` +
+      `<text x="${x + 3}" y="${labelY}" text-anchor="start" font-family="${EXPORT_FONT_FAMILY}" font-size="12" fill="${EXPORT_TEXT}" transform="rotate(-40 ${x} ${labelY})">${escapeXML(label)}</text>`;
+  }).join('');
+  return wrapSVG(content, frame.totalWidth, frame.totalHeight);
+}
+
+function renderHeroLabelItemSVG(it, frame) {
+  const { axisY, SIDE_PAD } = frame;
+  const x = it.x + SIDE_PAD;
+  const dir = it.below ? 1 : -1;
+  const dotYAbs = axisY + dir * it.naturalDist;
+  const boxNear = axisY + dir * it.dist;
+  const boxFar  = boxNear + dir * it.h;
+  const boxTop  = Math.min(boxNear, boxFar);
+  const boxX    = x - it.w / 2;
+
+  let s = '';
+  if (boxNear !== dotYAbs) {
+    s += `<line x1="${x}" y1="${dotYAbs}" x2="${x}" y2="${boxNear}" stroke="${it.hero.color}" stroke-width="1" opacity="0.4"/>`;
+  }
+  s += `<rect x="${boxX}" y="${boxTop}" width="${it.w}" height="${it.h}" rx="5" fill="${EXPORT_LABEL_BG}" stroke="${it.hero.color}" stroke-opacity="0.5" stroke-width="1"/>`;
+  s += `<rect x="${boxX}" y="${boxTop}" width="${it.w}" height="2" rx="1" fill="${it.hero.color}" opacity="0.7"/>`;
+
+  if (it.isFirst) {
+    const nameY  = boxTop + EXPORT_PAD_Y + EXPORT_LINE_H * 0.75;
+    const eventY = nameY + EXPORT_LINE_H + 2;
+    s += `<text x="${x}" y="${nameY}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="12" font-weight="700" fill="${it.hero.color}">${escapeXML(it.hero.name)}</text>`;
+    s += `<text x="${x}" y="${eventY}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="11" font-weight="500" fill="${EXPORT_TEXT}">${escapeXML(it.text)}</text>`;
+  } else {
+    const ty = boxTop + EXPORT_PAD_Y + EXPORT_LINE_H * 0.75;
+    s += `<text x="${x}" y="${ty}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="11" font-weight="500" fill="${EXPORT_TEXT}">${escapeXML(it.text)}</text>`;
+  }
+  return s;
+}
+
+function renderHeroesSVG(heroLayout, frame, selectedIds) {
+  const { axisY, SIDE_PAD } = frame;
+  const { heroPaths, items } = heroLayout;
+
+  let content = '';
+
+  heroLayout.dated.filter(hero => selectedIds.has(hero.id)).forEach(hero => {
+    const path = heroPaths[hero.id];
+    if (!path) return;
+    const { pts: localPts, hasUnknown, solidPts: localSolidPts, laneYVal } = path;
+    const dotYAbs = axisY + laneYVal;
+    const pts      = localPts.map(p => ({ x: p.x + SIDE_PAD, y: axisY + p.yLocal, ev: p.ev }));
+    const solidPts = hasUnknown ? pts.slice(0, -1) : pts;
+
+    if (solidPts.length >= 2) {
+      let d = `M${solidPts[0].x},${solidPts[0].y}`;
+      for (let i = 1; i < solidPts.length; i++) {
+        const a = solidPts[i - 1], b = solidPts[i];
+        const cp = (b.x - a.x) / 3;
+        d += ` C${a.x + cp},${a.y} ${b.x - cp},${b.y} ${b.x},${b.y}`;
+      }
+      content += `<path d="${d}" stroke="${hero.color}" stroke-width="1.8" fill="none" opacity="0.9"/>`;
+    }
+
+    if (hasUnknown) {
+      const a = solidPts.length > 0 ? solidPts[solidPts.length - 1] : pts[0];
+      const b = pts[pts.length - 1];
+      const cp = (b.x - a.x) / 3;
+      const dashD = a.y === dotYAbs
+        ? `M${a.x},${dotYAbs} L${b.x},${dotYAbs}`
+        : `M${a.x},${a.y} C${a.x + cp},${a.y} ${b.x - cp},${dotYAbs} ${b.x},${dotYAbs}`;
+      content += `<path d="${dashD}" stroke="${hero.color}" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.5"/>`;
+    }
+
+    const convergenceYears = new Set(WORLD_EVENTS.filter(w => w.convergence).map(w => w.year));
+    if (convergenceYears.has(pts[0].ev.year) && !pts[0].ev.noConvergence) {
+      content += `<line x1="${pts[0].x}" y1="${dotYAbs}" x2="${pts[0].x}" y2="${axisY}" stroke="${hero.color}" stroke-width="1.5" opacity="0.85"/>`;
+    }
+
+    const visiblePts = pts.filter(pt => pt.ev.unknown || !convergenceYears.has(pt.ev.year));
+    const uniquePositions = new Set(visiblePts.map(p => p.x)).size;
+    const actualLastIsConvergence = pts.length > 0 && convergenceYears.has(pts[pts.length - 1].ev.year);
+
+    visiblePts.forEach((pt, idx) => {
+      const isUnknown = !!pt.ev.unknown;
+      const isDeath   = !!pt.ev.death;
+      const isFirst   = idx === 0 && uniquePositions > 1 && !isUnknown;
+      const isLast    = idx === visiblePts.length - 1 && uniquePositions > 1 && !actualLastIsConvergence && !isUnknown;
+
+      if (isUnknown) {
+        content += `<text x="${pt.x}" y="${dotYAbs + 5}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="13" font-weight="700" fill="${hero.color}" opacity="0.7">??</text>`;
+      } else if (isDeath) {
+        content += `<text x="${pt.x}" y="${dotYAbs + 8}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="22" font-weight="900" fill="${hero.color}">✕</text>`;
+      } else if (isFirst) {
+        content += `<text x="${pt.x}" y="${dotYAbs + 9}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="26" font-weight="900" fill="${hero.color}">+</text>`;
+      } else if (isLast) {
+        content += `<text x="${pt.x}" y="${dotYAbs + 6}" text-anchor="middle" font-family="${EXPORT_FONT_FAMILY}" font-size="26" font-weight="900" fill="${hero.color}">−</text>`;
+      } else {
+        content += `<circle cx="${pt.x}" cy="${dotYAbs}" r="5" fill="${hero.color}" stroke="rgba(9,9,15,0.9)" stroke-width="2"/>`;
+      }
+    });
+  });
+
+  items
+    .filter(it => selectedIds.has(it.hero.id))
+    .forEach(it => { content += renderHeroLabelItemSVG(it, frame); });
+
+  return wrapSVG(content, frame.totalWidth, frame.totalHeight);
+}
+
+async function rasterizeExportCanvas(width, height, svgStr) {
+  const SCALE = 1.5;
+  const canvas = document.createElement('canvas');
+  canvas.width  = Math.round(width  * SCALE);
+  canvas.height = Math.round(height * SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+
+  if (svgStr) {
+    const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    try {
+      const img = await new Promise((resolve, reject) => {
+        const el = new Image();
+        el.onload  = () => resolve(el);
+        el.onerror = () => reject(new Error('Failed to rasterize export SVG'));
+        el.src = url;
+      });
+      ctx.drawImage(img, 0, 0, width, height);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  return { canvas, ctx };
+}
+
+function downloadCanvas(canvas, filename) {
+  return new Promise(resolve => {
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      resolve();
+    }, 'image/png');
+  });
+}
+
+function canvasToBlob(canvas) {
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+const crc32Table = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(data) {
+  let crc = 0xFFFFFFFF;
+  for (let i = 0; i < data.length; i++) crc = crc32Table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+function buildZip(files) {
+  const encoder = new TextEncoder();
+  const now = new Date();
+  const dosTime = ((now.getHours() & 0x1F) << 11) | ((now.getMinutes() & 0x3F) << 5) | ((now.getSeconds() >> 1) & 0x1F);
+  const dosDate = (((now.getFullYear() - 1980) & 0x7F) << 9) | (((now.getMonth() + 1) & 0xF) << 5) | (now.getDate() & 0x1F);
+
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+
+  files.forEach(f => {
+    const nameBytes = encoder.encode(f.name);
+    const crc = crc32(f.data);
+    const size = f.data.length;
+
+    const local = new DataView(new ArrayBuffer(30));
+    local.setUint32(0, 0x04034b50, true);
+    local.setUint16(4, 20, true);
+    local.setUint16(6, 0, true);
+    local.setUint16(8, 0, true);
+    local.setUint16(10, dosTime, true);
+    local.setUint16(12, dosDate, true);
+    local.setUint32(14, crc, true);
+    local.setUint32(18, size, true);
+    local.setUint32(22, size, true);
+    local.setUint16(26, nameBytes.length, true);
+    local.setUint16(28, 0, true);
+    localParts.push(new Uint8Array(local.buffer), nameBytes, f.data);
+
+    const central = new DataView(new ArrayBuffer(46));
+    central.setUint32(0, 0x02014b50, true);
+    central.setUint16(4, 20, true);
+    central.setUint16(6, 20, true);
+    central.setUint16(8, 0, true);
+    central.setUint16(10, 0, true);
+    central.setUint16(12, dosTime, true);
+    central.setUint16(14, dosDate, true);
+    central.setUint32(16, crc, true);
+    central.setUint32(20, size, true);
+    central.setUint32(24, size, true);
+    central.setUint16(28, nameBytes.length, true);
+    central.setUint16(30, 0, true);
+    central.setUint16(32, 0, true);
+    central.setUint16(34, 0, true);
+    central.setUint16(36, 0, true);
+    central.setUint32(38, 0, true);
+    central.setUint32(42, offset, true);
+    centralParts.push(new Uint8Array(central.buffer), nameBytes);
+
+    offset += 30 + nameBytes.length + size;
+  });
+
+  const centralOffset = offset;
+  const centralSize = centralParts.reduce((s, p) => s + p.length, 0);
+
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true);
+  end.setUint16(4, 0, true);
+  end.setUint16(6, 0, true);
+  end.setUint16(8, files.length, true);
+  end.setUint16(10, files.length, true);
+  end.setUint32(12, centralSize, true);
+  end.setUint32(16, centralOffset, true);
+  end.setUint16(20, 0, true);
+
+  return new Blob([...localParts, ...centralParts, new Uint8Array(end.buffer)], { type: 'application/zip' });
+}
+
+function safeFileName(name) {
+  return name.replace(/[\\/:*?"<>|]/g, '').replace(/,\s*/g, ' - ').trim();
+}
+
+async function runHeroBatchExport() {
+  const btn = document.getElementById('btn-export-heroes-all');
+  if (btn) { btn.disabled = true; btn.textContent = 'Exporting…'; }
+
+  const savedCollapsed = Array.from(collapsedEras);
+  collapsedEras.clear();
+  try {
+    const worldLayout = buildWorldExportLayout();
+    const heroLayout  = buildHeroExportLayout();
+    const frame        = computeSharedExportFrame(worldLayout, heroLayout);
+
+    const dated = heroLayout.dated;
+    const files = [];
+    const usedNames = new Set();
+
+    for (let i = 0; i < dated.length; i++) {
+      const hero = dated[i];
+      if (btn) btn.textContent = `Exporting ${i + 1}/${dated.length + 1}…`;
+      const svg = renderHeroesSVG(heroLayout, frame, new Set([hero.id]));
+      const { canvas } = await rasterizeExportCanvas(frame.totalWidth, frame.totalHeight, svg);
+      const blob = await canvasToBlob(canvas);
+
+      let base = safeFileName(hero.name) || hero.id;
+      let name = base;
+      let n = 2;
+      while (usedNames.has(name)) { name = `${base} (${n++})`; }
+      usedNames.add(name);
+
+      files.push({ name: `heroes/${name}.png`, data: new Uint8Array(await blob.arrayBuffer()) });
+    }
+
+    if (btn) btn.textContent = `Exporting ${dated.length + 1}/${dated.length + 1}…`;
+    const svgAll = renderHeroesSVG(heroLayout, frame, new Set(dated.map(h => h.id)));
+    const { canvas: canvasAll } = await rasterizeExportCanvas(frame.totalWidth, frame.totalHeight, svgAll);
+    const blobAll = await canvasToBlob(canvasAll);
+    files.push({ name: 'all-heroes-combined.png', data: new Uint8Array(await blobAll.arrayBuffer()) });
+
+    if (btn) btn.textContent = 'Zipping…';
+    const zipBlob = buildZip(files);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = 'world-of-rathe-heroes-individual.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } catch (err) {
+    console.error('Hero batch export failed:', err);
+    alert('Hero batch export failed: ' + err.message);
+  } finally {
+    collapsedEras.clear();
+    savedCollapsed.forEach(id => collapsedEras.add(id));
+    if (btn) { btn.disabled = false; btn.textContent = 'Export All Heroes (zip)'; }
+  }
+}
+
+document.getElementById('btn-export-heroes-all').addEventListener('click', runHeroBatchExport);
+
+const EXPORT_BUTTONS = {
+  world:    { id: 'btn-export-world',    label: 'Export World Events',    filename: 'world-of-rathe-world-events.png' },
+  age:      { id: 'btn-export-age',      label: 'Export Age Boundaries',  filename: 'world-of-rathe-age-boundaries.png' },
+  timeline: { id: 'btn-export-timeline', label: 'Export Timeline Only',   filename: 'world-of-rathe-timeline-base.png' },
+  heroes:   { id: 'btn-export-heroes',   label: 'Export Hero Timelines',  filename: 'world-of-rathe-heroes.png' },
+  dates:    { id: 'btn-export-dates',    label: 'Export Dates',           filename: 'world-of-rathe-dates.png' },
+};
+
+function runExport(kind) {
+  const meta = EXPORT_BUTTONS[kind];
+  const btn  = document.getElementById(meta.id);
+
+  if (kind === 'heroes') {
+    const selected = new Set(HEROES.filter(h => isHeroVisible(h.id)).map(h => h.id));
+    if (selected.size === 0) {
+      alert('No heroes are currently checked. Open the ☰ menu and select the heroes you want in this export.');
+      return;
+    }
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Exporting…'; }
+
+  setTimeout(async () => {
+    const savedCollapsed = Array.from(collapsedEras);
+    collapsedEras.clear();
+    try {
+      const worldLayout = buildWorldExportLayout();
+      const heroLayout  = buildHeroExportLayout();
+      const frame        = computeSharedExportFrame(worldLayout, heroLayout);
+
+      let svg;
+      if (kind === 'world')         svg = renderWorldEventsSVG(worldLayout, frame);
+      else if (kind === 'age')      svg = renderAgeBoundariesSVG(worldLayout, frame);
+      else if (kind === 'timeline') svg = renderTimelineOnlySVG(frame);
+      else if (kind === 'dates')    svg = renderDatesSVG(frame);
+      else if (kind === 'heroes')   svg = renderHeroesSVG(heroLayout, frame, new Set(HEROES.filter(h => isHeroVisible(h.id)).map(h => h.id)));
+
+      const { canvas } = await rasterizeExportCanvas(frame.totalWidth, frame.totalHeight, svg);
+      await downloadCanvas(canvas, meta.filename);
+    } catch (err) {
+      console.error('Timeline export failed:', err);
+    } finally {
+      collapsedEras.clear();
+      savedCollapsed.forEach(id => collapsedEras.add(id));
+      if (btn) { btn.disabled = false; btn.textContent = meta.label; }
+    }
+  }, 20);
+}
+
+Object.keys(EXPORT_BUTTONS).forEach(kind => {
+  const el = document.getElementById(EXPORT_BUTTONS[kind].id);
+  if (el) el.addEventListener('click', () => runExport(kind));
+});
+
 let resizeRafId = null;
 window.addEventListener('resize', () => {
   if (resizeRafId) return;
@@ -1147,7 +1726,6 @@ window.addEventListener('resize', () => {
   });
 });
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 track.style.width    = TRACK_WIDTH + 'px';
 setLayer.style.width = TRACK_WIDTH + 'px';
 buildWorldLayer();

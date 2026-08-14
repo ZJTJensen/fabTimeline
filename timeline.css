@@ -1,4 +1,3 @@
-/* ── Reset & base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -29,7 +28,6 @@ html, body {
   overscroll-behavior: none;
 }
 
-/* ── Viewport ──────────────────────────────────────────────────────────────── */
 #viewport {
   position: fixed;
   inset: 0;
@@ -42,8 +40,6 @@ html, body {
 }
 #viewport:active { cursor: grabbing; }
 
-/* ── Track ─────────────────────────────────────────────────────────────────── */
-/* transform-origin is set to 0 0 via JS; scaleX() zooms around left edge */
 #track {
   position: absolute;
   top: 0;
@@ -52,7 +48,6 @@ html, body {
   will-change: transform;
 }
 
-/* ── Era bands ─────────────────────────────────────────────────────────────── */
 .era-band {
   position: absolute;
   top: 0;
@@ -95,7 +90,6 @@ html, body {
   letter-spacing: 0;
 }
 
-/* ── Axis line ─────────────────────────────────────────────────────────────── */
 .axis-line {
   position: absolute;
   top: 50%;
@@ -107,7 +101,6 @@ html, body {
   pointer-events: none;
 }
 
-/* ── Tick marks ────────────────────────────────────────────────────────────── */
 #world-layer.dates-hidden .tick::before { display: none; }
 .tick {
   position: absolute;
@@ -133,7 +126,6 @@ html, body {
   display: inline-block;
 }
 
-/* ── World events ──────────────────────────────────────────────────────────── */
 .world-event {
   position: absolute;
   top: calc(50% - 160px);
@@ -147,7 +139,6 @@ html, body {
   z-index: 10;
 }
 
-/* Gradient connector — behind label and dot, fades in toward the axis */
 .world-event::before {
   content: '';
   position: absolute;
@@ -254,15 +245,14 @@ html, body {
   text-decoration: underline;
 }
 
-/* Age / era boundary — gold */
 .world-event.age::before {
   background: linear-gradient(to bottom, transparent 35%, rgba(246,224,94,0.38) 100%);
-  bottom: 7px; /* end connector at the diamond's top edge */
+  bottom: 7px;
 }
 .world-event.age .event-dot {
   position: absolute;
-  top: 153px;  /* 160px container − 7px = center of 14px dot lands on the axis */
-  left: -7px;  /* centers the 14px dot on the event's x position */
+  top: 153px;
+  left: -7px;
   width: 14px;
   height: 14px;
   background: #f6e05e;
@@ -284,19 +274,17 @@ html, body {
   box-shadow: 0 0 28px rgba(246,224,94,0.18), 0 4px 16px rgba(0,0,0,0.6);
 }
 
-/* Above-axis non-age events: label at top, diamond just below label, connector down to axis */
 .world-event:not(.world-event--below):not(.age):not(.convergence) .event-label { order: 1; }
 .world-event:not(.world-event--below):not(.age):not(.convergence) .event-dot {
   order: 2;
-  margin-top: 4px;   /* gap between label bottom and diamond */
+  margin-top: 4px;
 }
 .world-event:not(.world-event--below):not(.age):not(.convergence)::before {
-  top: 48px;   /* start connector below the label + diamond cluster */
-  bottom: 0;   /* extend all the way down to the axis */
+  top: 48px;
+  bottom: 0;
   background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.28) 65%);
 }
 
-/* Labels hidden by default — appear only on hover (when heroes are visible) */
 .world-event .event-label {
   opacity: 0;
   pointer-events: none;
@@ -309,61 +297,51 @@ html, body {
 .world-event:hover {
   z-index: 200;
 }
-/* Always show labels when heroes are hidden (zoomed out) — age boundaries stay hover-only */
 #world-layer.world-labels-always .world-event:not(.world-event--collapsed):not(.age) .event-label {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Events inside a collapsed era — suppress label, dim diamond */
 .world-event--collapsed .event-label { display: none; }
 .world-event--collapsed .event-dot   { opacity: 0.45; }
 
-/* Stacked events — shifted upward so overlapping labels don't collide */
 .world-event[data-stack-idx="1"] { transform: translateY(-70px); }
 .world-event[data-stack-idx="2"] { transform: translateY(-140px); }
 .world-event[data-stack-idx="3"] { transform: translateY(-210px); }
 .world-event[data-stack-idx="4"] { transform: translateY(-280px); }
 .world-event[data-stack-idx="5"] { transform: translateY(-350px); }
 .world-event[data-stack-idx="6"] { transform: translateY(-420px); }
-/* Reset stacking when the events below are hidden (zoom-out or toggle) */
 #world-layer.world-events-hidden .world-event.age { transform: none; }
 #world-layer.world-events-hidden .world-event.age::before { bottom: 7px; }
 
-/* ── Below-axis world events ─────────────────────────────────────────────────── */
 .world-event--below {
-  top: 50%;                     /* container starts at the axis */
-  justify-content: flex-end;    /* dot + label sit at the bottom of the container */
+  top: 50%;
+  justify-content: flex-end;
 }
 .world-event--below .event-dot {
-  /* flows in flex just above the label — not pinned to the axis */
   margin-top: 0;
   margin-bottom: 4px;
 }
 .world-event--below::before {
-  top: 0;      /* connector starts at the axis */
-  bottom: 48px; /* ends above the dot + label cluster */
+  top: 0;
+  bottom: 48px;
   background: linear-gradient(to top, transparent 35%, rgba(255,255,255,0.28) 100%);
 }
 .world-event--below .event-label {
   transform-origin: center bottom;
 }
-/* Below events stack downward — these override the upward stacking rules above */
 .world-event--below[data-stack-idx="1"] { transform: translateY(70px); }
 .world-event--below[data-stack-idx="2"] { transform: translateY(140px); }
 .world-event--below[data-stack-idx="3"] { transform: translateY(210px); }
 .world-event--below[data-stack-idx="4"] { transform: translateY(280px); }
 
-/* World events hidden (zoom-based or toggle) */
 #world-layer.world-events-hidden .world-event:not(.age) { display: none; }
 
-/* Age boundaries hidden (toggle) */
 #world-layer.age-bounds-hidden .world-event.age { display: none; }
 
-/* Convergence hub — sits on the axis like an age boundary, with a pulsing dot */
 .world-event.convergence .event-dot {
   position: absolute;
-  top: 152px;  /* 160px container − 8px = center of 16px dot on the axis */
+  top: 152px;
   left: -8px;
   width: 16px;
   height: 16px;
@@ -372,7 +350,7 @@ html, body {
   animation: convergence-pulse 2.8s ease-in-out infinite;
 }
 .world-event.convergence::before {
-  bottom: 8px; /* end connector at top edge of the 16px dot */
+  bottom: 8px;
   background: linear-gradient(to bottom, transparent 25%, rgba(255,255,255,0.38) 100%);
 }
 @keyframes convergence-pulse {
@@ -380,7 +358,6 @@ html, body {
   50%       { box-shadow: 0 0 0 7px rgba(255,255,255,0.10), 0 0 40px rgba(255,255,255,0.85); }
 }
 
-/* Permanent convergence pin — always visible, even when world events are hidden */
 .convergence-pin {
   position: absolute;
   top: 50%;
@@ -398,25 +375,21 @@ html, body {
   transform: translate(-50%, -50%) scaleX(var(--inv-zoom, 1)) scale(1.3) !important;
   z-index: 30;
 }
-/* Hide pin when heroes are hidden, or when the convergence world event is already showing */
 #world-layer.heroes-hidden .convergence-pin,
 #world-layer:not(.world-events-hidden) .convergence-pin { display: none; }
 
 
-/* Birth / origin events */
 .world-event.birth .event-dot {
   background: #68d391;
   box-shadow: 0 0 0 1.5px rgba(104,211,145,0.3), 0 0 14px rgba(104,211,145,0.5);
 }
 
-/* ── World layer ───────────────────────────────────────────────────────────── */
 #world-layer {
   position: relative;
   height: 100%;
   z-index: 1;
 }
 
-/* ── Set layer ─────────────────────────────────────────────────────────────── */
 #set-layer {
   position: absolute;
   top: calc(50% + 12px);
@@ -479,7 +452,6 @@ html, body {
 }
 .set-name { color: var(--text-dim); }
 
-/* ── Hero layer (fan mode) ───────────────────────────────────────────────────── */
 #hero-layer {
   position: absolute;
   top: 50%;
@@ -490,7 +462,6 @@ html, body {
   pointer-events: none;
 }
 
-/* SVG canvas that holds all bezier-curve hero paths */
 #hero-svg {
   position: absolute;
   top: 0;
@@ -514,7 +485,6 @@ html, body {
   opacity: 0;
 }
 
-/* Container for interactive dots + name labels */
 #hero-dots-layer {
   position: absolute;
   top: 0;
@@ -542,7 +512,6 @@ html, body {
   z-index: 30;
 }
 
-/* First and last event markers — zero-size anchor so translate(-50%,-50%) = translate(0,0) */
 .hero-dot--first,
 .hero-dot--last {
   background: none;
@@ -569,7 +538,6 @@ html, body {
 .hero-dot--first::before { content: '+'; }
 .hero-dot--last::before  { content: '−'; }
 
-/* Unknown future marker */
 .hero-dot--unknown {
   background: none;
   border: none;
@@ -601,7 +569,6 @@ html, body {
   height: 28px;
 }
 
-/* Death marker — same zero-size anchor pattern */
 .hero-dot--death {
   background: none;
   border: none;
@@ -632,7 +599,6 @@ html, body {
   height: 28px;
 }
 
-/* Invisible hit area so hover / click works on zero-size dot */
 .hero-dot--first::after,
 .hero-dot--last::after {
   content: '';
@@ -659,7 +625,6 @@ html, body {
 }
 .hero-dot:hover .hero-event-label { opacity: 1; }
 
-/* Hero overlay layers — positioned in screen coordinates, outside the scaled #track */
 #hero-names-layer,
 #hero-dots-screen {
   position: absolute;
@@ -687,7 +652,6 @@ html, body {
   line-height: 1;
 }
 
-/* ── UI overlay ─────────────────────────────────────────────────────────────── */
 #ui {
   position: fixed;
   top: 14px;
@@ -754,7 +718,6 @@ button.active:hover {
   padding: 5px 10px;
 }
 
-/* Legend dots */
 #legend {
   position: fixed;
   bottom: 14px;
@@ -826,7 +789,6 @@ button.active:hover {
   flex-shrink: 0;
 }
 
-/* ── Hamburger menu ─────────────────────────────────────────────────────────── */
 #hamburger-btn {
   width: 40px;
   height: 40px;
@@ -941,7 +903,6 @@ button.active:hover {
   white-space: nowrap;
 }
 
-/* ── Tooltip ─────────────────────────────────────────────────────────────────── */
 #year-hover {
   position: fixed;
   display: none;
@@ -983,7 +944,6 @@ button.active:hover {
   color: var(--text-dim);
 }
 
-/* Convergence tooltip extra content */
 .tt-extra:not(:empty) { margin-top: 8px; }
 .tt-story-group {
   display: flex;
@@ -1029,15 +989,12 @@ a.tt-story-label:hover {
   color: var(--text-dim);
 }
 
-/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
 
-/* ── Responsive ─────────────────────────────────────────────────────────────── */
 
-/* Tablets and smaller desktops */
 @media (max-width: 900px) {
   #legend {
     min-width: 170px;
@@ -1050,7 +1007,6 @@ a.tt-story-label:hover {
   }
 }
 
-/* Small screens / phones (landscape or small portrait) */
 @media (max-width: 600px) {
   #menu-panel { width: 85vw; }
   #legend { display: none; }
@@ -1077,7 +1033,6 @@ a.tt-story-label:hover {
   }
 }
 
-/* Very short viewports (landscape phones, small embedded windows) */
 @media (max-height: 500px) {
   .world-event {
     top: calc(50% - 80px);
@@ -1111,7 +1066,6 @@ a.tt-story-label:hover {
   }
 }
 
-/* ── Non-canon panel ────────────────────────────────────────────────────────── */
 #non-canon-panel {
   position: fixed;
   bottom: 14px;
@@ -1203,12 +1157,10 @@ a.tt-story-label:hover {
   font-weight: 600;
 }
 
-/* ── Hero hover highlight ────────────────────────────────────────────────────── */
 #hero-svg [data-hero]                { transition: opacity 0.15s; }
 #hero-names-layer .hero-start-label  { transition: opacity 0.15s; }
 #hero-dots-screen .hero-dot          { transition: box-shadow 0.15s, opacity 0.15s; }
 
-/* Dim everything that isn't the highlighted hero */
 #hero-svg.has-highlight path:not(.hero-hit-path):not(.highlighted),
 #hero-svg.has-highlight line:not(.highlighted) { opacity: 0.07; }
 #hero-svg.has-highlight path:not(.hero-hit-path).highlighted,
@@ -1217,7 +1169,6 @@ a.tt-story-label:hover {
 #hero-dots-screen.has-highlight .hero-dot:not(.highlighted) { opacity: 0.08; }
 #hero-names-layer.has-highlight .hero-start-label:not(.highlighted) { opacity: 0.12; }
 
-/* World events tied to the hovered hero */
 .world-event.hero-event-highlighted              { z-index: 50; }
 .world-event.hero-event-highlighted .event-label { opacity: 1 !important; }
 .world-event.hero-event-highlighted .event-dot   { filter: brightness(2.2); }

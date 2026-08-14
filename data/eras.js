@@ -34,7 +34,7 @@ const WORLD_EVENTS = [
   { year: -100,                label: 'The First Grand Magister, the Devout, leads Solana',
     reasoning: [
       { description: 'The Devout takes their role', url: 'https://legendarystories.net/world-of-rathe/solana.html#grand-magisters' }
-    ] }, 
+    ] },
   { year:  -25,                label: 'The Devout becomes the Apostate and leaves Solana\nDemonastery founded',
     reasoning: [
       { description: 'The Devout flees Solana', url: 'https://legendarystories.net/world-of-rathe/demonastery.html' }
@@ -47,7 +47,7 @@ const WORLD_EVENTS = [
   reasoning: [
     { description: 'Valahi was founded at the start of the war of the ancients', url: 'https://legendarystories.net/world-of-rathe/aria.html#valahai' }
   ] },
-  { year: -7,               label: 'The War of the Ancients begins', 
+  { year: -7,               label: 'The War of the Ancients begins',
     reasoning: [
       { description: 'Aurora slid the symbols for 90 into place', url: 'https://legendarystories.net/main-story/rosetta/secret-of-the-aetherscribes.html' }
     ] },

@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- ── Hamburger / hero filter menu ──────────────────────────────────────── -->
   <div id="menu-overlay">
     <div id="menu-panel">
       <h2>Heroes of Rathe</h2>
@@ -21,7 +20,6 @@
     </div>
   </div>
 
-  <!-- ── Controls ───────────────────────────────────────────────────────────── -->
   <div id="ui">
     <div class="ui-row">
       <button class="icon-btn" id="hamburger-btn" title="Filter Heroes">☰</button>
@@ -35,7 +33,6 @@
     </div>
   </div>
 
-  <!-- ── Legend (bottom-left) ───────────────────────────────────────────────── -->
   <div id="legend">
     <div class="legend-header">
       <h3>Legend</h3>
@@ -67,10 +64,18 @@
         <button id="btn-show-heroes"       class="legend-btn" title="Force all hero timelines visible at any zoom level">Show Heroes</button>
         <button id="btn-show-dates"        class="legend-btn" title="Dates are fan estimates, not official FaB canon">Show Unofficial Dates</button>
       </div>
+      <div class="legend-row" style="margin-top:8px; flex-direction:column; gap:5px; align-items:stretch; border-top:1px solid #2a2a44; padding-top:8px">
+        <div style="color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Export images (transparent PNG, layers align)</div>
+        <button id="btn-export-world"    class="legend-btn" title="World events only, no age boundaries">Export World Events</button>
+        <button id="btn-export-age"      class="legend-btn" title="Age boundaries only">Export Age Boundaries</button>
+        <button id="btn-export-timeline" class="legend-btn" title="Just the axis line and era dividers, no events">Export Timeline Only</button>
+        <button id="btn-export-heroes"   class="legend-btn" title="Exports only the heroes currently checked in the ☰ menu">Export Hero Timelines</button>
+        <button id="btn-export-heroes-all" class="legend-btn" title="One PNG per hero (every hero, ignoring the ☰ menu) plus one combined image — all bundled as a .zip">Export All Heroes (zip)</button>
+        <button id="btn-export-dates"    class="legend-btn" title="A reasonable set of date ticks along the axis, not every year">Export Dates</button>
+      </div>
     </div>
   </div>
 
-  <!-- ── Non-canon panel (right side) ─────────────────────────────────────── -->
   <div id="non-canon-panel">
     <div class="non-canon-header">
       <h3>Non-Canon Zone</h3>
@@ -83,36 +88,24 @@
     </div>
   </div>
 
-  <!-- ── Year hover label ─────────────────────────────────────────────────── -->
   <div id="year-hover"></div>
 
-  <!-- ── Tooltip ────────────────────────────────────────────────────────────── -->
   <div id="tooltip">
     <div class="tt-title"></div>
     <div class="tt-sub"></div>
     <div class="tt-extra"></div>
   </div>
 
-  <!-- ── Main timeline viewport ─────────────────────────────────────────────── -->
   <div id="viewport">
-    <!--
-      #track is 25 000 px wide and is transformed (scaleX + translateX).
-      Three child layers sit inside it; their z-indices and opacities are
-      toggled by JS based on the effective zoom level.
-    -->
-    <!-- Hero overlay elements live OUTSIDE #track — no scaleX inheritance, no rasterisation blur -->
     <div id="hero-names-layer"></div>
     <div id="hero-dots-screen"></div>
 
     <div id="track">
 
-      <!-- Layer 1: always visible — era bands, axis line, tick marks, world events -->
       <div id="world-layer"></div>
 
-      <!-- Layer 2: set markers — fades in when zoomed past SET_THRESHOLD -->
       <div id="set-layer"></div>
 
-      <!-- Layer 3: hero lanes — fades in when zoomed past HERO_THRESHOLD -->
       <div id="hero-layer"></div>
 
     </div>
