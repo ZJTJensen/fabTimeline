@@ -39,33 +39,33 @@
       <button id="legend-toggle" title="Minimize legend">−</button>
     </div>
     <div class="legend-body">
-      <div class="legend-row"><div class="legend-dot" style="background:#f6e05e;border-radius:2px;transform:rotate(45deg);box-shadow:0 0 8px rgba(246,224,94,0.7)"></div>Age boundary</div>
-      <div class="legend-row"><div class="legend-dot" style="background:rgba(215,215,240,0.95);border-radius:2px;transform:rotate(45deg);box-shadow:0 0 6px rgba(215,215,240,0.5)"></div>World event</div>
-      <div class="legend-row" style="margin-top:6px; border-top:1px solid #2a2a44; padding-top:6px; color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Hero events</div>
-      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">+</span>First event</div>
-      <div class="legend-row"><div class="legend-dot" style="background:#a0a0c0;border:2px solid rgba(9,9,15,0.9)"></div>Story event</div>
-      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">−</span>Last event</div>
-      <div class="legend-row"><span class="legend-hero-marker" style="font-size:18px;font-weight:900;line-height:1;color:#a0a0c0;text-shadow:0 0 6px #a0a0c0">✕</span>Death</div>
-      <div class="legend-row"><span class="legend-hero-marker" style="font-size:13px;font-weight:700;line-height:1;color:#a0a0c0;opacity:0.55;letter-spacing:0.05em">??</span>Whereabouts unknown</div>
-      <div class="legend-row" style="margin-top:6px; border-top:1px solid #2a2a44; padding-top:6px; color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Year notation</div>
-      <div class="legend-row" style="color:#9090b0; font-size:11px"><b style="color:#e8e8f0">(N)A</b> — the Nth Age of the world<br><span style="color:#6b6b8a">e.g. 100 3A = year 100, Third Age</span></div>
-      <div class="legend-row" style="margin-top:6px; border-top:1px solid #2a2a44; padding-top:6px; color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Date certainty</div>
-      <div class="legend-row" style="color:#9090b0; font-size:11px"><b style="color:#e8e8f0">*</b> — estimated within ~10 years</div>
-      <div class="legend-row" style="color:#9090b0; font-size:11px"><b style="color:#e8e8f0">†</b> — rough guess only</div>
-      <div class="legend-row" style="margin-top:6px; color:#6b6b8a; font-size:11px">
+      <div class="legend-row"><div class="legend-dot legend-dot-age"></div>Age boundary</div>
+      <div class="legend-row"><div class="legend-dot legend-dot-world"></div>World event</div>
+      <div class="legend-row legend-caption legend-section-label">Hero events</div>
+      <div class="legend-row"><span class="legend-hero-marker">+</span>First event</div>
+      <div class="legend-row"><div class="legend-dot legend-dot-story"></div>Story event</div>
+      <div class="legend-row"><span class="legend-hero-marker">−</span>Last event</div>
+      <div class="legend-row"><span class="legend-hero-marker">✕</span>Death</div>
+      <div class="legend-row"><span class="legend-hero-marker legend-hero-marker--unknown">??</span>Whereabouts unknown</div>
+      <div class="legend-row legend-caption legend-section-label">Year notation</div>
+      <div class="legend-row legend-note"><b class="legend-note-strong">(N)A</b> — the Nth Age of the world<br><span class="legend-note-dim">e.g. 100 3A = year 100, Third Age</span></div>
+      <div class="legend-row legend-caption legend-section-label">Date certainty</div>
+      <div class="legend-row legend-note"><b class="legend-note-strong">*</b> — estimated within ~10 years</div>
+      <div class="legend-row legend-note"><b class="legend-note-strong">†</b> — rough guess only</div>
+      <div class="legend-row legend-hint">
         Scroll or pinch to zoom.<br>
         Drag to pan.<br>
         Heroes appear at high zoom.
       </div>
-      <div class="legend-row" style="margin-top:8px; flex-direction:column; gap:5px; align-items:stretch">
+      <div class="legend-row legend-btn-group">
         <button id="btn-show-world-events" class="legend-btn">Show World Events</button>
         <button id="btn-show-age-bounds"   class="legend-btn">Show Age Boundaries</button>
         <button id="btn-show-set-icons"    class="legend-btn">Show Set Icons</button>
         <button id="btn-show-heroes"       class="legend-btn" title="Force all hero timelines visible at any zoom level">Show Heroes</button>
         <button id="btn-show-dates"        class="legend-btn" title="Dates are fan estimates, not official FaB canon">Show Unofficial Dates</button>
       </div>
-      <div class="legend-row" style="margin-top:8px; flex-direction:column; gap:5px; align-items:stretch; border-top:1px solid #2a2a44; padding-top:8px">
-        <div style="color:#6b6b8a; font-size:10px; text-transform:uppercase; letter-spacing:0.08em">Export images (transparent PNG, layers align)</div>
+      <div class="legend-row legend-btn-group legend-btn-group--divider">
+        <div class="legend-caption">Export images (transparent PNG, layers align)</div>
         <button id="btn-export-world"    class="legend-btn" title="World events only, no age boundaries">Export World Events</button>
         <button id="btn-export-age"      class="legend-btn" title="Age boundaries only">Export Age Boundaries</button>
         <button id="btn-export-timeline" class="legend-btn" title="Just the axis line and era dividers, no events">Export Timeline Only</button>
@@ -83,7 +83,7 @@
     </div>
     <div class="non-canon-body">
       <div class="non-canon-tag">⚔ Deathmatch Arena</div>
-      <p>The Deathmatch Arena sits outside the main canon of FaB — heroes can appear here without consequence to their canonical stories.</p>
+      <p>The Deathmatch Arena sits outside the main canon of FaB. Heroes can appear here without consequence to their canonical stories.</p>
       <p>The one confirmed exception is <strong>Kassai</strong>, who canonically competed, won gold, and used it to hire an army for her return to Volcor.</p>
     </div>
   </div>
