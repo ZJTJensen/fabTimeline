@@ -45,17 +45,17 @@ function xToYear(x) {
 
 function yearToAgeLabel(year) {
   const ages = [
-    { start: -750, ageNum: 1 },
-    { start: -500, ageNum: 2 },
-    { start: -100, ageNum: 3 },
-    { start:    0, ageNum: 4 },
+    { start: -750, ageNum: 1, offset: 0 },
+    { start: -500, ageNum: 2, offset: 1 },
+    { start: -100, ageNum: 3, offset: 1 },
+    { start:    0, ageNum: 4, offset: 1 },
   ];
   let currentAge = ages[0];
   for (const age of ages) {
     if (year >= age.start) currentAge = age;
     else break;
   }
-  const raw = year - currentAge.start + 1;
+  const raw = year - currentAge.start + currentAge.offset;
   const displayYear = Number.isInteger(year) ? raw : parseFloat(raw.toFixed(1));
   return `${displayYear} ${currentAge.ageNum}A`;
 }

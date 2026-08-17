@@ -22,7 +22,7 @@ const WORLD_EVENTS = [
     reasoning: [
       { description: 'This is now no longer true, but in the original lore book "Long ago, humans arrived on the shores of Rathe from a distant land, "', url: 'https://legendarystories.net/archive/world-of-rathe/rathe.html?highlight=Humans%20apear%20on%20rathe#the-world-of-rathe' }
     ] },
-  { year: -700,                label: 'Volcor is founded†',
+  { year: -750,                label: 'Volcor is founded†',
     reasoning: [
       { description: 'The volcanic empire of Volcor is established. Estimated date.', url: 'https://legendarystories.net/world-of-rathe/volcor.html' },
       { description: 'Source', url: 'https://www.youtube.com/watch?v=uKeKuaJ4nlw' }
