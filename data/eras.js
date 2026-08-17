@@ -68,7 +68,7 @@ const WORLD_EVENTS = [
     ] },
   { year:    0,                label: 'Isen Falls',           below: true,
     reasoning: [
-      { description: 'Glacia dies entombing Isen in ic', url: 'https://legendarystories.net/main-story/armory-decks/battle-of-isenloft.html' }
+      { description: 'Glacia dies entombing Isen in ice', url: 'https://legendarystories.net/main-story/armory-decks/battle-of-isenloft.html' }
     ] },
   { year:    0,                label: 'Aldengrove Falls',     below: true,
     reasoning: [
