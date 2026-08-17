@@ -117,7 +117,7 @@ const WORLD_EVENTS = [
     reasoning: [
       { description: 'We know of his writings, but there is no confirmed time line of when it was', url: 'https://legendarystories.net/world-of-rathe/savage-lands.html#call-of-adventure' }
     ] },
-  { year:  230,                label: 'Volcore Civil War*',
+  { year:  230,                label: 'Volcor Civil War*',
     reasoning: [
       { description: 'There was a civil war before the current Emperor was crowned', url: 'https://legendarystories.net/world-of-rathe/volcor.html#the-emperor' }
     ] },
