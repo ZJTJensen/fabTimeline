@@ -6,6 +6,7 @@ const ERAS = [
   { id: 'era-5', start:  250, end:  260, label: 'War of Solana' },
 ];
 
+
 const SEGMENTS = [
   { eraId: 'era-1', start:  -750, end: -500, pxPerYr:   3 },
   { eraId: 'era-2', start:  -500, end: -100, pxPerYr:   3 },
@@ -13,6 +14,7 @@ const SEGMENTS = [
   { eraId: 'era-4', start:     0, end:  250, pxPerYr:  20 },
   { eraId: 'era-5', start:   250, end:  260, pxPerYr: 600 },
 ];
+
 
 const WORLD_EVENTS = [
   { year: -750,   type: 'age', label: 'First Age Begins' },
@@ -54,7 +56,7 @@ const WORLD_EVENTS = [
   { year:    0,   type: 'age', label: 'End of Third Age\nFourth Age begins' },
   { year:    0,                label: 'War of the Ancients ends',
     reasoning: [
-      { description: 'The ancients sacrficies ends the war', url: 'https://legendarystories.net/main-story/armory-decks/battle-of-isenloft.html' }
+      { description: 'The ancients sacrifices ends the war', url: 'https://legendarystories.net/main-story/armory-decks/battle-of-isenloft.html' }
     ] },
   { year:    0,                label: 'Rathe, i’Arathael, and the Nebulus rift split apart',
     reasoning: [
@@ -62,7 +64,7 @@ const WORLD_EVENTS = [
     ] },
   { year:    0,                label: 'Ikaru Falls',          below: true,
     reasoning: [
-      { description: 'The Dark tide, creatures that reflect the creatures that attacked during the war of the ancinets attack Mistviel', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' }
+      { description: 'The Dark tide, creatures that reflect the creatures that attacked during the war of the ancients attack Mistviel', url: 'https://legendarystories.net/main-story/crucible-of-war/edge-of-autumn.html' }
     ] },
   { year:    0,                label: 'Isen Falls',           below: true,
     reasoning: [
@@ -70,13 +72,13 @@ const WORLD_EVENTS = [
     ] },
   { year:    0,                label: 'Aldengrove Falls',     below: true,
     reasoning: [
-      { description: 'The Queen Calvera sacrfices her people to stop the old ones', url: 'https://legendarystories.net/main-story/tales-of-aria/amongst-the-brambles.html' }
+      { description: 'The Queen Calvera sacrifices her people to stop the old ones', url: 'https://legendarystories.net/main-story/tales-of-aria/amongst-the-brambles.html' }
     ] },
   { year:    0,                label: 'Dhani Empire Falls†',  below: true,
     reasoning: [
-      { description: 'There is no sure date, but it was self destroyed by hubirus, and sunk under the sea, could an ancient\'s death, that lived there have caused the downfall', url: 'https://legendarystories.net/world-of-rathe/high-seas.html#the-dhani-empire' }
+      { description: 'There is no sure date, but it was self destroyed by hubris, and sunk under the sea, could an ancient\'s death, that lived there have caused the downfall', url: 'https://legendarystories.net/world-of-rathe/high-seas.html#the-dhani-empire' }
     ] },
-  { year:   25,                label: 'The Apostate sacrifices himself to hide the Demonastery from Solana, in the nebulus rift',
+  { year:   25,                label: 'The Apostate sacrifices himself to hide the Demonastery from Solana, in the nebulous rift',
     reasoning: [
       { description: 'The Apostate Dies to hide the Demonastery', url: 'https://legendarystories.net/world-of-rathe/demonastery.html#drifting-between-planes' }
     ] },
@@ -87,14 +89,15 @@ const WORLD_EVENTS = [
   { year:   50,                label: 'Metrix is founded*',       below: true,
     reasoning: [{ description: 'There is not a lot of information available about the founding of Metrix, as date wise, but there is no mentions of any wars or old ones, so we put it after the war of the ancients', url: 'https://legendarystories.net/world-of-rathe/metrix.html#cogwerx-conglomerate' }
 
+
     ] },
   { year:   40,                label: 'The Pits start to form*',  below: true,
     reasoning: [
       { description: 'We know for sure the pits has to come after Metrix, as it is the mining of metrix that forms them', url: 'https://legendarystories.net/world-of-rathe/pits.html' }
     ] },
-  { year:  100,                label: 'Anarch Zeir Jorunies to the deepest recesses of the Pits†',
+  { year:  100,                label: 'Anarch Zeir journeys to the deepest recesses of the Pits†',
     reasoning: [
-      { description: 'Anarch Zeir Jorunies to the deepest recesses of the Pits', url: 'https://legendarystories.net/world-of-rathe/pits.html#lapocalypta' }
+      { description: 'Anarch Zeir journeys to the deepest recesses of the Pits', url: 'https://legendarystories.net/world-of-rathe/pits.html#lapocalypta' }
     ] },
   { year:  103,                label: 'L’Apocalypta is founded†',
     reasoning: [
@@ -112,7 +115,7 @@ const WORLD_EVENTS = [
     ] },
   { year:  220,                label: 'Hamilton Scarborough expedition into the Savage Lands†',
     reasoning: [
-      { description: 'We know of his writtings, but there is no confirmed time line of when it was', url: 'https://legendarystories.net/world-of-rathe/savage-lands.html#call-of-adventure' }
+      { description: 'We know of his writings, but there is no confirmed time line of when it was', url: 'https://legendarystories.net/world-of-rathe/savage-lands.html#call-of-adventure' }
     ] },
   { year:  230,                label: 'Volcore Civil War*',
     reasoning: [
@@ -125,6 +128,7 @@ const WORLD_EVENTS = [
   { year:  252.3,              label: 'Bright Lights — Metrix\nMultiple fates converge',            convergence: true },
   { year:  253.3,              label: 'The Queen of Candlehold, Calvera, dies\nCandlehold opens to Aria for the first time', convergence: true },
 ];
+
 
 const SETS = [
   { year:   0,     label: 'Mastery Pack Guardian',  short: 'MPG', img: 'assets/mpg.png' },
@@ -147,3 +151,6 @@ const SETS = [
   { year: 254.3,   label: 'Super Slam',             short: 'SUP', img: 'assets/sup.png' },
   { year: 254.6,   label: 'Omens of the Third Age', short: 'OMN', img: 'assets/omn.png' },
 ];
+
+
+

@@ -73,7 +73,7 @@ const HEROES = [
       { year: 245,    label: 'Aeos is born', url: 'https://legendarystories.net/main-story/monarch/sworn-to-protect.html' },
       { year: 246,    label: 'Erina Dies', url: 'https://legendarystories.net/main-story/monarch/sworn-to-protect.html', death: true },
       { year: 250,    label: 'Boltyn Stands against the Shadow', url: '' },
-      { year: 251.3,  label: 'Bolyn recieves Shiyana', url: 'https://legendarystories.net/main-story/outsiders/tidings-in-the-light.html' },
+      { year: 251.3,  label: 'Bolyn receives Shiyana', url: 'https://legendarystories.net/main-story/outsiders/tidings-in-the-light.html' },
       { year: 252,    label: 'Heros fights against the shadow', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
       { year: 254.45, label: 'The war rages on', url: 'https://legendarystories.net/main-story/compendium-of-rathe/vow-unbroken.html' },
     ],
@@ -84,7 +84,7 @@ const HEROES = [
     description: 'Leader of the ',
     events: [
       { year: 235,   label: 'Bravo begins as a carnival performer', url: 'https://legendarystories.net/main-story/welcome-to-rathe/a-rising-star.html' },
-      { year: 245,   label: 'Bravo Fights back the encroching darkness', url: 'https://legendarystories.net/main-story/welcome-to-rathe/a-rising-star.html' },
+      { year: 245,   label: 'Bravo Fights back the encroaching darkness', url: 'https://legendarystories.net/main-story/welcome-to-rathe/a-rising-star.html' },
       { year: 250.6, label: 'Stars at the grand Everfest carnival' },
       { year: 252,   label: 'Heros fights against the shadow', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
     ],
@@ -152,7 +152,7 @@ const HEROES = [
     events: [
       { year: 230, label: 'Dorinthea is chosen by Sol to become a Warrior', url: 'https://legendarystories.net/main-story/welcome-to-rathe/pride-of-the-ironsongs.html' },
       { year: 240, label: 'Dorinthea is a squire for the hand of Sol', url: 'https://legendarystories.net/main-story/welcome-to-rathe/pride-of-the-ironsongs.html' },
-      { year: 250, label: 'Dorinthea is at the initall invasion of the Demonastery', url: 'https://legendarystories.net/main-story/crucible-of-war/no-smoke-without-fire.html' },
+      { year: 250, label: 'Dorinthea is at the initial invasion of the Demonastery', url: 'https://legendarystories.net/main-story/crucible-of-war/no-smoke-without-fire.html' },
       { year: 252, label: 'Morlok Hill', url: 'https://legendarystories.net/main-story/interlude/morlock-hill.html' },
       { year: 252, label: 'Heros fights against the shadow', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
     ],
@@ -230,7 +230,7 @@ const HEROES = [
     description: '',
     events: [
       { year: null, label: 'Gravy Bones\'s origin is raised from the dead by Nocetes' },
-      { year: 254,  label: 'Gravy Bones searchs for the lost city of Trapl Dahni', url: 'https://legendarystories.net/main-story/high-seas/captain-bones-and-the-city-of-gold.html' },
+      { year: 254,  label: 'Gravy Bones searches for the lost city of Trapl Dahni', url: 'https://legendarystories.net/main-story/high-seas/captain-bones-and-the-city-of-gold.html' },
     ],
   },
   {
@@ -258,7 +258,7 @@ const HEROES = [
     color: '#67e8f9',
     description: '',
     events: [
-      { year: 240,   label: 'Iyslander fless volcor' },
+      { year: 240,   label: 'Iyslander flees Volcor' },
       { year: 250.3, label: 'Iyslander returns to volcor', url: 'https://legendarystories.net/main-story/uprising/journey-into-the-forgotten.html' },
     ],
   },
@@ -294,7 +294,7 @@ const HEROES = [
     color: '#9f7aea',
     description: '',
     events: [
-      { year: 245, label: 'Katsu leveas the Mengushi clan to find a cure for a dessies', url: 'https://legendarystories.net/main-story/welcome-to-rathe/wanderings-in-the-mists.html' },
+      { year: 245, label: 'Katsu leaves the Mengushi clan to find a cure for a dessies', url: 'https://legendarystories.net/main-story/welcome-to-rathe/wanderings-in-the-mists.html' },
     ],
   },
   {
@@ -319,7 +319,7 @@ const HEROES = [
       { year: 242,    label: 'Levia works at the Barthamont estate', url: 'https://legendarystories.net/main-story/monarch/destroy-and-consume.html' },
       { year: 249,    label: 'Levia is corrupted by lady Barthamont', url: 'https://legendarystories.net/main-story/monarch/destroy-and-consume.html' },
       { year: 249,    label: 'Chane finds Levia and teams up to fight Solana', url: 'https://legendarystories.net/main-story/monarch/harbinger-of-the-abyss.html' },
-      { year: 252,    label: 'Levia and Vynnset work together to assult solana', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
+      { year: 252,    label: 'Levia and Vynnset work together to assault solana', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
       { year: 254.45, label: 'Levia, consummed, battles with Hala', url: 'https://legendarystories.net/main-story/compendium-of-rathe/vow-unbroken.html' },
     ],
   },
@@ -364,7 +364,7 @@ const HEROES = [
     color: '#90e0ef',
     description: '',
     events: [
-      { year: 253.3, label: 'Melody shows up to the funueral of the queen of Candlehold', url: 'https://legendarystories.net/main-story/rosetta/seeds-of-renewal.html' },
+      { year: 253.3, label: 'Melody shows up to the funeral of the queen of Candlehold', url: 'https://legendarystories.net/main-story/rosetta/seeds-of-renewal.html' },
     ],
   },
   {
@@ -436,7 +436,7 @@ const HEROES = [
     color: '#e53e3e',
     description: '',
     events: [
-      { year: 220,   label: 'A cub, rhinar survives in the dence jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
+      { year: 220,   label: 'A cub, Rhinar survives in the dense jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
       { year: 250,   label: 'Established alpha predator of the jungle', url: 'https://legendarystories.net/main-story/welcome-to-rathe/kill-or-be-killed.html' },
       { year: 253.8, label: 'Rhinar returns to the Savage Lands', url: 'https://legendarystories.net/short-stories/armory-decks/rhinar.html' },
     ],
@@ -493,7 +493,7 @@ const HEROES = [
     color: '#047857',
     description: '',
     events: [
-      { year: 241,   label: 'Uzuri, starts her journey as an assasin for the spider', url: 'https://legendarystories.net/main-story/outsiders/its-just-business.html' },
+      { year: 241,   label: 'Uzuri, starts her journey as an assassin for the spider', url: 'https://legendarystories.net/main-story/outsiders/its-just-business.html' },
       { year: 251.6, label: 'Arakni Returns to the Pits, and discovers the assassination was a trap', url: 'https://legendarystories.net/main-story/outsiders/the-spiders-trap.html' },
     ],
   },
@@ -519,7 +519,7 @@ const HEROES = [
     color: '#ca8a04',
     description: '',
     events: [
-      { year: 252.6, label: 'Vctor Goldmane battles in the Deathmatch Arena', url: 'https://legendarystories.net/main-story/heavy-hitters/arena-announcements.html' },
+      { year: 252.6, label: 'Victor Goldmane battles in the Deathmatch Arena', url: 'https://legendarystories.net/main-story/heavy-hitters/arena-announcements.html' },
     ],
   },
   {
@@ -537,7 +537,7 @@ const HEROES = [
     description: '',
     events: [
       { year: 241, label: 'Vynnset, Iron Maiden is born', url: 'https://legendarystories.net/main-story/dusk-till-dawn/anointed-in-shadow.html' },
-      { year: 252, label: 'Levia and Vynnset work together to assult solana', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
+      { year: 252, label: 'Levia and Vynnset work together to assault solana', url: 'https://legendarystories.net/main-story/dusk-till-dawn/unity-in-light.html' },
     ],
   },
   {
@@ -566,3 +566,8 @@ const HEROES = [
     ],
   },
 ];
+
+
+
+
+
