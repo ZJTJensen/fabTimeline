@@ -87,7 +87,7 @@ let heroesOverride      = null;
 let worldEventsOverride = null;
 let ageBoundsOverride   = null;
 let setIconsOverride    = null;
-let mobileLayerMode     = null; // null = auto (desktop); 'world' | 'heroes' = mobile forced layer
+let mobileLayerMode     = null;
 let prevZoom            = null;
 let showDates           = false;
 let showDeathmatch      = false;
@@ -994,8 +994,8 @@ document.getElementById('btn-jump-modern').addEventListener('click', () => {
 
 btnDates.addEventListener('click', () => { showDates = !showDates; applyDatesVisibility(); });
 
-const MOBILE_EVENTS_YEAR = 0;    // displays as "1 4A"
-const MOBILE_HEROES_YEAR = 249;  // displays as "250 4A"
+const MOBILE_EVENTS_YEAR = 0;
+const MOBILE_HEROES_YEAR = 249;
 const MOBILE_EVENTS_ZOOM = 0.3;
 const MOBILE_HEROES_ZOOM = HERO_THRESHOLD + 0.15;
 
