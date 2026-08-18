@@ -74,15 +74,20 @@ let TRACK_WIDTH = computeTrackWidth();
 
 let zoom = 1;
 let panX = 0;
+let panY = 0;
+let heroVScale = 1;
 let isDragging = false;
 let dragStartX = 0;
+let dragStartY = 0;
 let dragStartPan = 0;
+let dragStartPanY = 0;
 let visibleHeroes = new Set(HEROES.map(h => h.id));
 let activeTooltip = null;
 let heroesOverride      = null;
 let worldEventsOverride = null;
 let ageBoundsOverride   = null;
 let setIconsOverride    = null;
+let mobileLayerMode     = null; // null = auto (desktop); 'world' | 'heroes' = mobile forced layer
 let prevZoom            = null;
 let showDates           = false;
 let showDeathmatch      = false;
@@ -90,6 +95,7 @@ let showDeathmatch      = false;
 const DEATHMATCH_EXCEPTIONS = new Set(['kassai', 'kayo', 'rhinar']);
 
 let heroSVG = null;
+let heroMaxY = 0;
 const heroLabelData = [];
 
 let eraLabelEls       = [];
@@ -143,6 +149,9 @@ const btnAB          = document.getElementById('btn-show-age-bounds');
 const btnH           = document.getElementById('btn-show-heroes');
 const btnSI          = document.getElementById('btn-show-set-icons');
 const btnDates       = document.getElementById('btn-show-dates');
+const mobileToggleWorld  = document.getElementById('mobile-toggle-world');
+const mobileToggleHeroes = document.getElementById('mobile-toggle-heroes');
+const MOBILE_MQ          = window.matchMedia('(max-width: 600px)');
 
 track.style.transformOrigin = '0 0';
 
@@ -381,6 +390,7 @@ function buildHeroFanLayer() {
 
   const evtY = id => laneY[id] ?? 0;
   const maxY = Math.max(0, ...Object.values(laneY));
+  heroMaxY = maxY;
   heroLayer.style.height = (maxY + 100) + 'px';
 
   heroSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -480,6 +490,7 @@ function buildHeroFanLayer() {
     nameLbl.addEventListener('click', e => {
       e.stopPropagation();
       const vw = viewport.clientWidth;
+      if (MOBILE_MQ.matches) panY = clampPanY(-pts[0].dotY);
       if (zoom < HERO_THRESHOLD) {
         zoom = Math.min(MAX_ZOOM, HERO_THRESHOLD);
         panX = clampPan(vw / 2 - pts[0].x * zoom, zoom);
@@ -575,6 +586,7 @@ function buildMenu() {
       menuOverlay.classList.remove('open');
       if (zoom < HERO_THRESHOLD) zoom = Math.min(MAX_ZOOM, HERO_THRESHOLD);
       panX = clampPan(viewport.clientWidth / 2 - yearToX(firstEvt.year) * zoom, zoom);
+      if (MOBILE_MQ.matches) panY = clampPanY(-heroLaneY(hero.id));
       applyTransform();
     });
 
@@ -631,7 +643,7 @@ function updateStickyLabels() {
     if (!inView) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
     if (el.style.display === 'none') el.style.display = '';
     el.style.left = Math.max(10, panX + baseX * zoom) + 'px';
-    el.style.top  = (vh / 2 + dotY - 8) + 'px';
+    el.style.top  = (vh / 2 + panY + dotY * heroVScale - 8) + 'px';
   });
 
   heroDotData.forEach(({ el, heroId, trackX, dotY }) => {
@@ -643,7 +655,7 @@ function updateStickyLabels() {
     }
     if (el.style.display === 'none') el.style.display = '';
     el.style.left = screenX + 'px';
-    el.style.top  = (vh / 2 + dotY) + 'px';
+    el.style.top  = (vh / 2 + panY + dotY * heroVScale) + 'px';
   });
 }
 
@@ -713,6 +725,13 @@ function showConvergenceTooltip(e, worldEv) {
 }
 
 function positionTooltip(cx, cy) {
+  if (MOBILE_MQ.matches) {
+    tooltip.style.left      = '50%';
+    tooltip.style.top       = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    return;
+  }
+  tooltip.style.transform = '';
   const w  = tooltip.offsetWidth  || 220;
   const h  = tooltip.offsetHeight || 60;
   let left = cx + 14;
@@ -759,14 +778,25 @@ function highlightConvergence(year) {
 let tickEls = null;
 
 function applyTransform() {
-  track.style.transform = `translateX(${panX}px) scaleX(${zoom})`;
+  track.style.transform = `translate(${panX}px, ${panY}px) scaleX(${zoom})`;
+
+  if (MOBILE_MQ.matches) {
+    heroVScale = 1;
+  } else {
+    const availableHalf = Math.max(80, viewport.clientHeight / 2 - 60);
+    heroVScale = heroMaxY > 0 ? Math.min(1, availableHalf / heroMaxY) : 1;
+  }
+  heroLayer.style.transform       = `scaleY(${heroVScale})`;
+  heroLayer.style.transformOrigin = '0 0';
 
   const fraction = (600 * zoom) / (TRACK_WIDTH / 5);
 
   if (zoom !== prevZoom) {
-    if (worldEventsOverride === false && fraction > WORLD_EVENT_THRESHOLD) worldEventsOverride = null;
-    if (setIconsOverride    === false && fraction > SET_THRESHOLD)         setIconsOverride    = null;
-    if (heroesOverride      === false && zoom > HERO_THRESHOLD)            heroesOverride      = null;
+    if (mobileLayerMode === null) {
+      if (worldEventsOverride === false && fraction > WORLD_EVENT_THRESHOLD) worldEventsOverride = null;
+      if (setIconsOverride    === false && fraction > SET_THRESHOLD)         setIconsOverride    = null;
+      if (heroesOverride      === false && zoom > HERO_THRESHOLD)            heroesOverride      = null;
+    }
     prevZoom = zoom;
   }
 
@@ -834,7 +864,7 @@ function applyTransform() {
 }
 
 function applyPanOnly() {
-  track.style.transform = `translateX(${panX}px) scaleX(${zoom})`;
+  track.style.transform = `translate(${panX}px, ${panY}px) scaleX(${zoom})`;
   updateStickyLabels();
 }
 
@@ -853,11 +883,16 @@ function animatePanTo(targetPanX, duration = 500) {
   panAnimId = requestAnimationFrame(tick);
 }
 
+function heroLaneY(heroId) {
+  return heroLabelData.find(d => d.heroId === heroId)?.dotY ?? 0;
+}
+
 function jumpToNextEvent(hero) {
   const evts = hero.events.filter(e => e.year !== null).sort((a, b) => a.year - b.year);
   if (evts.length === 0) return;
   const centerTrackX = (viewport.clientWidth / 2 - panX) / zoom;
   const target = evts.find(e => yearToX(e.year) > centerTrackX + 1) ?? evts[0];
+  if (MOBILE_MQ.matches) panY = clampPanY(-heroLaneY(hero.id));
   animatePanTo(clampPan(viewport.clientWidth / 2 - yearToX(target.year) * zoom, zoom));
 }
 
@@ -876,9 +911,16 @@ function clampPan(p, z) {
   return Math.min(40, Math.max(vw - TRACK_WIDTH * z - 40, p));
 }
 
+function clampPanY(p) {
+  const vh = viewport.clientHeight;
+  const contentHalf = Math.max(heroMaxY + 550, vh / 2);
+  return Math.min(contentHalf, Math.max(-contentHalf, p));
+}
+
 function resetView() {
   zoom = (viewport.clientWidth - 80) / TRACK_WIDTH;
   panX = 40;
+  panY = 0;
   applyTransform();
 }
 
@@ -889,14 +931,17 @@ viewport.addEventListener('wheel', e => {
 
 viewport.addEventListener('mousedown', e => {
   if (e.target.closest('.world-event, .set-marker, .hero-dot, .hero-hit-path, #tooltip, #menu-overlay')) return;
-  isDragging   = true;
-  dragStartX   = e.clientX;
-  dragStartPan = panX;
+  isDragging    = true;
+  dragStartX    = e.clientX;
+  dragStartY    = e.clientY;
+  dragStartPan  = panX;
+  dragStartPanY = panY;
   viewport.style.cursor = 'grabbing';
 });
 window.addEventListener('mousemove', e => {
   if (!isDragging) return;
   panX = clampPan(dragStartPan + (e.clientX - dragStartX), zoom);
+  if (MOBILE_MQ.matches) panY = clampPanY(dragStartPanY + (e.clientY - dragStartY));
   applyPanOnly();
 });
 window.addEventListener('mouseup', () => {
@@ -924,6 +969,7 @@ viewport.addEventListener('touchmove', e => {
     zoomAt((e.touches[0].clientX + e.touches[1].clientX) / 2, currDist / prevDist);
   } else if (e.touches.length === 1 && lastTouches?.length === 1) {
     panX = clampPan(panX + e.touches[0].clientX - lastTouches[0].clientX, zoom);
+    if (MOBILE_MQ.matches) panY = clampPanY(panY + e.touches[0].clientY - lastTouches[0].clientY);
     applyPanOnly();
   }
   lastTouches = e.touches;
@@ -935,6 +981,7 @@ document.getElementById('btn-reset'   ).addEventListener('click', resetView);
 document.getElementById('btn-jump-modern').addEventListener('click', () => {
   zoom = viewport.clientWidth / (1500 * 12);
   panX = clampPan(40 - yearToX(249) * zoom, zoom);
+  panY = 0;
   applyTransform();
 });
 
@@ -946,6 +993,44 @@ document.getElementById('btn-jump-modern').addEventListener('click', () => {
 ].forEach(([id, fn]) => document.getElementById(id).addEventListener('click', () => { fn(); applyTransform(); }));
 
 btnDates.addEventListener('click', () => { showDates = !showDates; applyDatesVisibility(); });
+
+const MOBILE_EVENTS_YEAR = 0;    // displays as "1 4A"
+const MOBILE_HEROES_YEAR = 249;  // displays as "250 4A"
+const MOBILE_EVENTS_ZOOM = 0.3;
+const MOBILE_HEROES_ZOOM = HERO_THRESHOLD + 0.15;
+
+function setMobileLayerMode(mode) {
+  mobileLayerMode     = mode;
+  worldEventsOverride = mode === 'world';
+  ageBoundsOverride    = false;
+  heroesOverride        = mode === 'heroes';
+  mobileToggleWorld.classList.toggle('active',  mode === 'world');
+  mobileToggleHeroes.classList.toggle('active', mode === 'heroes');
+
+  const targetYear = mode === 'heroes' ? MOBILE_HEROES_YEAR : MOBILE_EVENTS_YEAR;
+  const targetZoom = mode === 'heroes' ? MOBILE_HEROES_ZOOM  : MOBILE_EVENTS_ZOOM;
+  const minZoom     = (viewport.clientWidth - 80) / TRACK_WIDTH;
+  zoom = Math.min(MAX_ZOOM, Math.max(minZoom, targetZoom));
+  panX = clampPan(viewport.clientWidth / 2 - yearToX(targetYear) * zoom, zoom);
+  panY = 0;
+  applyTransform();
+}
+mobileToggleWorld.addEventListener('click',  () => setMobileLayerMode('world'));
+mobileToggleHeroes.addEventListener('click', () => setMobileLayerMode('heroes'));
+
+function syncMobileLayerMode() {
+  if (MOBILE_MQ.matches) {
+    if (mobileLayerMode === null) setMobileLayerMode('world');
+  } else if (mobileLayerMode !== null) {
+    mobileLayerMode      = null;
+    worldEventsOverride  = null;
+    heroesOverride        = null;
+    ageBoundsOverride     = null;
+    panY                  = 0;
+    applyTransform();
+  }
+}
+MOBILE_MQ.addEventListener('change', syncMobileLayerMode);
 
 document.getElementById('legend-toggle').addEventListener('click', () => {
   const legend = document.getElementById('legend');
@@ -1098,6 +1183,7 @@ function rebuildAll() {
   heroSVG.setAttribute('width', TRACK_WIDTH);
   zoom = Math.max((viewport.clientWidth - 80) / TRACK_WIDTH, zoom);
   panX = clampPan(panX, zoom);
+  panY = clampPanY(panY);
   applyDatesVisibility();
   applyTransform();
 }
@@ -1722,6 +1808,7 @@ window.addEventListener('resize', () => {
   resizeRafId = requestAnimationFrame(() => {
     resizeRafId = null;
     panX = clampPan(panX, zoom);
+    panY = clampPanY(panY);
     applyTransform();
   });
 });
@@ -1735,3 +1822,4 @@ buildMenu();
 applyDatesVisibility();
 applyHeroVisibility();
 resetView();
+syncMobileLayerMode();

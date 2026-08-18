@@ -718,6 +718,10 @@ button.active:hover {
   padding: 5px 10px;
 }
 
+#mobile-layer-toggle {
+  display: none;
+}
+
 #legend {
   position: fixed;
   bottom: 14px;
@@ -1093,6 +1097,51 @@ a.tt-story-label:hover {
   }
   #btn-reset, #btn-jump-modern {
     padding: 5px 8px;
+  }
+
+  #tooltip {
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    pointer-events: auto;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #mobile-layer-toggle {
+    display: flex;
+    position: fixed;
+    left: 50%;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    gap: 3px;
+    z-index: 100;
+    background: rgba(9,9,15,0.88);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .mobile-toggle-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    min-height: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-toggle-btn:hover {
+    border-color: transparent;
+    background: transparent;
+  }
+  .mobile-toggle-btn.active {
+    background: rgba(74,144,226,0.32);
+    color: var(--text);
   }
 }
 
